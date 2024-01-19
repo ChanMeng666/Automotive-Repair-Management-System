@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Curent Job List</h2>
+
+<!-- code to display list of jobs-->
+<table>
+    <tr>
+        <th>Job ID</th>
+        <th>Customer ID</th>
+        <th>Date</th>
+    </tr>
+    {% for job in job_list %}
+        <tr>
+            {% for field in job %}
+                <td>{{field}}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
