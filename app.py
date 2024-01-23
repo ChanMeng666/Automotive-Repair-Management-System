@@ -2,7 +2,7 @@ from flask import Flask
 from flask import render_template
 from flask import request
 from flask import redirect
-from flask import url_for
+from flask_paginate import Pagination
 import re
 from datetime import datetime
 import mysql.connector
@@ -17,22 +17,42 @@ connection = None
 def getCursor():
     global dbconn
     global connection
-    connection = mysql.connector.connect(user=connect.dbuser, \
-    password=connect.dbpass, host=connect.dbhost, \
-    database=connect.dbname, autocommit=True)
+    connection = mysql.connector.connect(user=connect.dbuser,password=connect.dbpass,host=connect.dbhost,database=connect.dbname,autocommit=True)
     dbconn = connection.cursor()
     return dbconn
 
+
+# 设置基础的路由("/")，返回base.html页面
 @app.route("/")
 def home():
-    return redirect("/currentjobs")
+    return render_template("base.html")
 
+
+# 设置currentjobs的路由，用以执行分页,并显示结果在currentjoblist.html页面
 @app.route("/currentjobs")
 def currentjobs():
     connection = getCursor()
-    connection.execute("SELECT job_id,customer,job_date FROM job where completed=0;")
+    page = int(request.args.get('page', 1))
+    per_page = 10
+    offset = (page - 1) * per_page
+
+    # 获取当前工作列表（即未完成的工作）的总长度（即总行数）
+    connection.execute("SELECT COUNT(*) FROM job WHERE completed=0;")
+    total = connection.fetchone()[0]
+
+    # 获取分页后的工作列表
+    connection.execute("SELECT job.job_id,job.customer,customer.first_name,customer.family_name,job.job_date FROM job INNER JOIN customer ON job.customer = customer.customer_id WHERE job.completed=0 LIMIT %s OFFSET %s;",(per_page, offset))
     jobList = connection.fetchall()
-    return render_template("currentjoblist.html", job_list = jobList)    
+
+    pagination = Pagination(page=page, total=total, per_page=per_page, record_name='jobs')
+    return render_template('currentjoblist.html', job_list=jobList, pagination=pagination)
+
+
+# 设置technician的路由，重定向到"/currentjobs"路由
+@app.route("/technician")
+def technician():
+    return redirect("/currentjobs")
+
 
 
 

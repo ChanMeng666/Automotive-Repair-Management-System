@@ -1,22 +1,39 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Curent Job List</h2>
+<!-- 新增Bootstrap容器，包含工作列表的标题和表格 -->
+<div class="container my-4">
 
-<!-- code to display list of jobs-->
-<table>
-    <tr>
-        <th>Job ID</th>
-        <th>Customer ID</th>
-        <th>Date</th>
-    </tr>
-    {% for job in job_list %}
+    <h2 class="text-center mb-5">Current Job List</h2>
+
+    <!-- code to display list of jobs-->
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead class="thead-light">
         <tr>
-            {% for field in job %}
-                <td>{{field}}</td>
-            {% endfor %}
+            <th>Job ID</th>
+            <th>Customer ID</th>
+            <th>First Name</th>
+            <th>Family Name</th>
+            <th>Date</th>
         </tr>
-    {% endfor %}
-</table>
+        </thead>
+        <tbody>
+        {% for job in job_list %}
+            <tr>
+                {% for field in job %}
+                    <td>{{field}}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- pagination 新增分页器-->
+    {{ pagination.info|safe }}
+    {{ pagination.links|safe }}
+
+</div>
 
 {% endblock %}
