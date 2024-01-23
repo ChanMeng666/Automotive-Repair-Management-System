@@ -33,6 +33,10 @@ def home():
 def currentjobs():
     connection = getCursor()
     page = int(request.args.get('page', 1))
+
+    selection = request.args.get('selection', '')
+    search = request.args.get('search', '')
+
     per_page = 10
     offset = (page - 1) * per_page
 
@@ -40,12 +44,35 @@ def currentjobs():
     connection.execute("SELECT COUNT(*) FROM job WHERE completed=0;")
     total = connection.fetchone()[0]
 
-    # 获取分页后的工作列表
-    connection.execute("SELECT job.job_id,job.customer,customer.first_name,customer.family_name,job.job_date FROM job INNER JOIN customer ON job.customer = customer.customer_id WHERE job.completed=0 LIMIT %s OFFSET %s;",(per_page, offset))
+    #对应的字段名映射，防止SQL注入
+    column_map = {
+        "Job ID": "job.job_id",
+        "Customer ID": "job.customer",
+        "First Name": "customer.first_name",
+        "Family Name": "customer.family_name",
+        "Date": "job.job_date"
+    }
+
+    column_name = column_map.get(selection)
+
+    if selection and search and column_name:
+        # 参数化值以防止sql注入
+        connection.execute(f"SELECT job.job_id,job.customer,customer.first_name,customer.family_name,job.job_date FROM job INNER JOIN customer ON job.customer = customer.customer_id WHERE {column_name} LIKE %s AND job.completed=0 LIMIT %s OFFSET %s;", (f'%{search}%', per_page, offset))
+    else:
+        # 如果没有提供选中的字段或搜索内容，则返回所有记录
+        connection.execute("SELECT job.job_id,job.customer,customer.first_name,customer.family_name,job.job_date FROM job INNER JOIN customer ON job.customer = customer.customer_id WHERE job.completed=0 LIMIT %s OFFSET %s;", (per_page, offset))
+
     jobList = connection.fetchall()
 
+    # 判断查询结果是否为空
+    no_result = False
+    if len(jobList) == 0:
+        no_result = True
+
     pagination = Pagination(page=page, total=total, per_page=per_page, record_name='jobs')
-    return render_template('currentjoblist.html', job_list=jobList, pagination=pagination)
+    # 向模板传递一个新的变量no_result
+    return render_template('currentjoblist.html', job_list=jobList, pagination=pagination, no_result=no_result)
+
 
 
 # 设置technician的路由，重定向到"/currentjobs"路由
