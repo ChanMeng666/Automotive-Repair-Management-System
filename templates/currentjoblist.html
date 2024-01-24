@@ -1,66 +1,60 @@
 {% extends "base.html" %}
 
-{% block title %}
-Current Jobs
-{% endblock %}
-
+{% block title %}Current Jobs{% endblock %}
 
 {% block content %}
+    <div class="container my-4">
+        <h2 class="text-center mb-5">Current Job List</h2>
 
-<!-- 新增Bootstrap容器，包含工作列表的标题和表格 -->
-<div class="container my-4">
+        <form class="d-flex align-items-center mb-4">
+            <select class="form-select me-3" id="selection" name="selection">
+                <option selected>Choose...</option>
+                <option value="Job ID" {% if selection == 'Job ID' %} selected {% endif %}>Job ID</option>
+                <option value="Customer ID" {% if selection == 'Customer ID' %} selected {% endif %}>Customer ID</option>
+                <option value="First Name" {% if selection == 'First Name' %} selected {% endif %}>First Name</option>
+                <option value="Family Name" {% if selection == 'Family Name' %} selected {% endif %}>Family Name</option>
+                <option value="Date" {% if selection == 'Date' %} selected {% endif %}>Date</option>
+            </select>
+            <input type="text" class="form-control me-3" placeholder="Incomplete information can be entered for fuzzy search" id="search" name="search" value="{{ search }}">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
 
-    <h2 class="text-center mb-5">Current Job List</h2>
+        {% if no_result %}
+            <div class="alert alert-warning" role="alert">
+              No search found, please re-enter.
+            </div>
+        {% endif %}
 
-    <!-- 新增的选择框、搜索框和确认按钮 -->
-    <form class="d-flex align-items-center mb-4">
-        <select class="form-select me-3" id="selection" name="selection">
-            <option selected>Choose...</option>
-            <option value="Job ID">Job ID</option>
-            <option value="Customer ID">Customer ID</option>
-            <option value="First Name">First Name</option>
-            <option value="Family Name">Family Name</option>
-            <option value="Date">Date</option>
-        </select>
-        <input type="text" class="form-control me-3" placeholder="Incomplete information can be entered for fuzzy search" id="search" name="search">
-        <button type="submit" class="btn btn-primary">Search</button>
-    </form>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Job ID</th>
+                        <th>Customer ID</th>
+                        <th>First Name</th>
+                        <th>Family Name</th>
+                        <th>Date</th>
+                        <th>Modify</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for job in job_list %}
+                        <tr>
+                            {% for field in job %}
+                                <td>{{field}}</td>
+                            {% endfor %}
+                            <td>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modifyModal{{ loop.index }}">Modify</button>
 
-    <!-- 检测no_result，当为True时显示警告 -->
-    {% if no_result %}
-    <div class="alert alert-warning" role="alert">
-        No search found, please re-enter.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- pagination 新增分页器-->
+        {{ pagination.info|safe }}
+        {{ pagination.links|safe }}
     </div>
-    {% endif %}
-
-    <!-- code to display list of jobs-->
-    <div class="table-responsive">
-      <table class="table table-striped">
-        <thead class="thead-light">
-        <tr>
-            <th>Job ID</th>
-            <th>Customer ID</th>
-            <th>First Name</th>
-            <th>Family Name</th>
-            <th>Date</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for job in job_list %}
-            <tr>
-                {% for field in job %}
-                    <td>{{field}}</td>
-                {% endfor %}
-            </tr>
-        {% endfor %}
-        </tbody>
-      </table>
-    </div>
-
-    <!-- pagination 新增分页器-->
-    {{ pagination.info|safe }}
-    {{ pagination.links|safe }}
-
-</div>
-
 {% endblock %}
