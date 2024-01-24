@@ -1,57 +1,57 @@
-# Proposed Project Changes and Code Modifications
+# Python Flask Application: Technical Report
 
-This document presents the process and associated code modifications that have been made in the duration of this conversation. Each set of modifications is related to a specific piece of code and has been detailed as per the requirements from the initial to final state.
+## Web Application Structure
 
-## Python Flask Project
+The Python Flask web application follows the Model-View-Controller (MVC) structure. The Flask application script serves as the controller, HTML templates as the view, and the MySQL database as the model for the application.
 
-This project is a Python Flask application which connects to a MySQL database to handle some jobs-related operations. During the course of developmental conversation, the provided code has undergone some scrutiny, updates, and structural enhancements to improve its readability and to meet Python's standard guidelines for cleaner and well-structured code.
+### Proposed Project Changes and Code Modifications
 
-### Code Formatting
-
-#### Python Code Formatting and Indentations
-
-Formatting code and proper use of indentations are an inherent aspect of coding that augments the readability and consistency throughout the codebase. Especially in Python, proper indentation is mandatory as it defines scope in the code making it easily comprehensible.
-
-Here's a snippet of how these formatting modifications appear:
-
-```python
-def getCursor():
-    global dbconn
-    global connection
-    connection = mysql.connector.connect(user=connect.dbuser, password=connect.dbpass, host=connect.dbhost, database=connect.dbname, autocommit=True)
-    dbconn = connection.cursor()
-    return dbconn
-```
-
-Additional Changes:
-
-1. **Separated imports:** Following the PEP8 style guide, imports are grouped by standard library, third-party libraries, and local application/library specific.
-
-2. **Improved variable naming:** For instance, `job_parts_services` is used instead of `jobps`, to help clarify the data that it contains.
-
-3. **Added line breaks between sections:** This was included to visually segregate different sections of the code. 
+This section presents the process and associated code modifications to enhance application functionalities and user experiences. These are chronologically ordered as a sequence of modification suggestions and their justifications.
 
 ### Modification 1: Paginator and Table Design
 
-Some changes were proposed to the existing app.py file and currentjoblist.html to meet the following requirements:
+One of the first changes includes adding pagination to the 'Current Job List' and enhancing the table aesthetics to make it aesthetically pleasing while ensuring the website is compatible with various screen sizes and browsers.
 
-- Page-wise display of the 'Current Job List', with each page containing 10 data entries.
-- Make the 'Current Job List' table more appealing by adding some width around the edges.
-- Use a responsive design to make the website compatible with all screens and browsers.
+These changes have been implemented by using the `flask_paginate` library to control pagination. As per design specifications, only 10 data entries are displayed per page. Additionally, utilizing Bootstrap's `container` class, the table has been repositioned for improved aesthetics. Bootstrap's responsive design principle has been relied upon to ensure compatibility across multiple screens.
 
-To implement these, the `flask_paginate` was utilized to manage the pagination. Also, the table was placed within a Bootstrap `container` class for better positioning. Bootstrap's responsiveness was relied on for making the website compatible with multiple screens.
+```python
+from flask_paginate import Pagination
+```
+
+### Routes and Functions
+
+- `"/"` : The home route renders the base template.
+- `"/currentjobs"` : The current jobs route connects to the database, fetches the job data and performs pagination before rendering the 'currentjoblist.html' template alongside the fetched data and other parameters for pagination and search functionalities.
+- `"/technician"` : This route redirects to the current jobs route.
+
+### Data Flow
+
+The home route renders the base template which provides the user a choice to select their role. Based on the selected role, the user is navigated to the appropriate route.
+
+In the `"/currentjobs"` route, it calculates the offset for pagination, fetches data from the database, constructs a dictionary mapping containing the job related data, and passes it on to the 'currentjoblist.html' template.
+
+### Design Decisions
+
+App design decisions largely hinged on usability, scalability, and security.
+
+### Structure and Navigation
+
+Navigation is based on user role selection on the home page, which redirects users to their respective page, like 'Current Jobs' for technicians, enhancing accessibility and role-based navigation.
+
+### Templates and Layout
+
+The application uses separate templates for the home and jobs list pages, enhancing modularity and reducing redundancy. A base template is extended across all templates to maintain consistency. Within each job list entry on the jobs list page, a bootstrap modal pop-up is used for data modification functionality. This design choice promotes easy data update without navigating away from the current page.
 
 ### Modification 2: Changing Paginator position and Page Number
 
-Additional changes were proposed building up from the previous modifications. The requirements were as follows:
+To enhance user interaction, changes were suggested for paginator positioning and page number display. The paginator was moved to the bottom right corner of the screen using CSS for easier visibility and access. Furthermore, the '(current)' text next to the current page number was removed using JavaScript for cleaner display.
 
-- Pagination should be displayed at the bottom right corner of the screen.
-- Don't include '(current)' text next to the current page number on the paginator.
+### GET vs POST
 
-For this task, CSS was used to move the paginator bar to the desired location. However, removing the '(current)' text from the page number proved to be tricky. As Flask does not provide a direct way to handle this, a JavaScript solution was proposed to replace the '(current)' string after the page is fully loaded.
+GET requests are used to fetch data for display or search, ensuring safe, idempotent and cacheable operations as per HTTP/1.1 specifications. Flask's request object is used to access data sent through these GET requests, aiding in achieving pagination and search functionalities that require specific data fetching.
 
-## Notes
+Thus, through methodical design decisions and understanding of requisite functionalities, an extensible and user-friendly web application is developed.
 
-- Please install the `flask_paginate` by running `pip install flask_paginate` in your terminal before running these modifications.
-- Please make modifications as per your boilerplate code where required.
-- Consistent code formatting is crucial as it improves the readability and maintainability of your code, allowing others (and your future self) to better understand the code you have written.
+### Notes
+
+Install the `flask_paginate` library by running `pip install flask_paginate` before running these changes. Tailor modifications to align with your boilerplate code as required.
