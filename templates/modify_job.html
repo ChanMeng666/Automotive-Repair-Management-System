@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Modify Job{% endblock %}
+
+{% block content %}
+    <div class="container my-4">
+        <h2 class="text-center mb-5">Modify Job</h2>
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Job ID</th>
+                        <th>Customer ID</th>
+                        <th>First Name</th>
+                        <th>Family Name</th>
+                        <th>Date</th>
+                        <th>Part Name</th>
+                        <th>Part Quantity</th>
+                        <th>Service Name</th>
+                        <th>Service Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for job_parts_services_qty in job_parts_services_qty %}
+                        <tr>
+                            {% for field in job_parts_services_qty %}
+                                <td>{{field}}</td>
+                            {% endfor %}
+                            <td></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <form method="POST">
+            <div class="mb-3">
+                <label for="part" class="form-label">Add Part</label>
+                <select class="form-select" id="part" name="part">
+                    <option selected value="">Choose...</option>
+                    {% for part in parts %}
+                        <option value="{{ part[0] }}" {% if part_id == part[0] %} selected {% endif %}>{{ part[1] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="part_qty" class="form-label">Part Quantity</label>
+                <input class="form-control" type="number" id="part_qty" name="part_qty" value="{{ part_qty }}">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Part</button>
+        </form>
+
+        <form method="POST">
+            <div class="mb-3">
+                <label for="service" class="form-label">Add Service</label>
+                <select class="form-select" id="service" name="service">
+                    <option selected value="">Choose...</option>
+                    {% for service in services %}
+                        <option value="{{ service[0] }}" {% if service_id == service[0] %} selected {% endif %}>{{ service[1] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="service_qty" class="form-label">Service Quantity</label>
+                <input class="form-control" type="number" id="service_qty" name="service_qty" value="{{ service_qty }}">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Service</button>
+        </form>
+
+    </div>
+{% endblock %}

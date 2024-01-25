@@ -4,7 +4,7 @@
 
 {% block content %}
     <div class="container my-4">
-        <h2 class="text-center mb-5">Current Job List</h2>
+        <p class="fw-bold text-uppercase text-center fs-4">Current Job List</p>
 
         <form class="d-flex align-items-center mb-4">
             <select class="form-select me-3" id="selection" name="selection">
@@ -29,26 +29,23 @@
             <table class="table table-striped">
                 <thead class="thead-light">
                     <tr>
-                        <th>Job ID</th>
                         <th>Customer ID</th>
-                        <th>First Name</th>
-                        <th>Family Name</th>
+                        <th>Name</th>
                         <th>Date</th>
                         <th>Modify</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for job in job_list %}
-                        <tr>
-                            {% for field in job %}
-                                <td>{{field}}</td>
-                            {% endfor %}
-                            <td>
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modifyModal{{ loop.index }}">Modify</button>
-
-                            </td>
-                        </tr>
-                    {% endfor %}
+                {% for job in job_list %}
+                    <tr>
+                        <td>{{ job[1] }}</td>
+                        <td>{{ job[2] if job[2] is not none else " " }} {{  job[3] if job[3] is not none else " " }}</td>
+                        <td>{{ job[4] }}</td>
+                        <td>
+                            <a href="{{ url_for('modify_job', job_id=job[0]) }}" type="button" class="btn btn-primary">Modify</a>
+                        </td>
+                    </tr>
+                {% endfor %}
                 </tbody>
             </table>
         </div>
