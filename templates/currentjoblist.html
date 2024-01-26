@@ -1,57 +1,70 @@
 {% extends "base.html" %}
 
-{% block title %}Current Jobs{% endblock %}
+{% block title %}
+Current Jobs
+{% endblock %}
 
 {% block content %}
-    <div class="container my-4">
-        <p class="fw-bold text-uppercase text-center fs-4">Current Job List</p>
+<div class="container my-4">
+    <p class="fw-bold text-uppercase text-center fs-4">Current Job List</p>
 
-        <form class="d-flex align-items-center mb-4">
-            <select class="form-select me-3" id="selection" name="selection">
-                <option selected>Choose...</option>
-                <option value="Job ID" {% if selection == 'Job ID' %} selected {% endif %}>Job ID</option>
-                <option value="Customer ID" {% if selection == 'Customer ID' %} selected {% endif %}>Customer ID</option>
-                <option value="First Name" {% if selection == 'First Name' %} selected {% endif %}>First Name</option>
-                <option value="Family Name" {% if selection == 'Family Name' %} selected {% endif %}>Family Name</option>
-                <option value="Date" {% if selection == 'Date' %} selected {% endif %}>Date</option>
-            </select>
-            <input type="text" class="form-control me-3" placeholder="Incomplete information can be entered for fuzzy search" id="search" name="search" value="{{ search }}">
-            <button type="submit" class="btn btn-primary">Search</button>
-        </form>
+    <form class="d-flex align-items-center mb-4">
+        <select class="form-select me-3" id="selection" name="selection">
+            <option selected>Choose...</option>
+            <option value="Job ID" {% if selection == 'Job ID' %} selected {% endif %}>Job ID</option>
+            <option value="Customer ID" {% if selection == 'Customer ID' %} selected {% endif %}>Customer ID</option>
+            <option value="First Name" {% if selection == 'First Name' %} selected {% endif %}>First Name</option>
+            <option value="Family Name" {% if selection == 'Family Name' %} selected {% endif %}>Family Name</option>
+            <option value="Date" {% if selection == 'Date' %} selected {% endif %}>Date</option>
+        </select>
 
-        {% if no_result %}
-            <div class="alert alert-warning" role="alert">
-              No search found, please re-enter.
-            </div>
-        {% endif %}
+        <input type="text"
+               class="form-control me-3"
+               placeholder="Incomplete information can be entered for fuzzy search"
+               id="search"
+               name="search"
+               value="{{ search }}">
 
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead class="thead-light">
-                    <tr>
-                        <th>Customer ID</th>
-                        <th>Name</th>
-                        <th>Date</th>
-                        <th>Modify</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for job in job_list %}
-                    <tr>
-                        <td>{{ job[1] }}</td>
-                        <td>{{ job[2] if job[2] is not none else " " }} {{  job[3] if job[3] is not none else " " }}</td>
-                        <td>{{ job[4] }}</td>
-                        <td>
-                            <a href="{{ url_for('modify_job', job_id=job[0]) }}" type="button" class="btn btn-primary">Modify</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    {% if no_result %}
+        <div class="alert alert-warning" role="alert">
+          No search found, please re-enter.
         </div>
+    {% endif %}
 
-        <!-- pagination 新增分页器-->
-        {{ pagination.info|safe }}
-        {{ pagination.links|safe }}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead class="thead-light">
+                <tr>
+                    <th>Customer ID</th>
+                    <th>Name</th>
+                    <th>Date</th>
+                    <th>Modify</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for job in job_list %}
+                <tr>
+                    <td>{{ job[1] }}</td>
+                    <td>{{ job[2] if job[2] is not none else " " }} {{  job[3] if job[3] is not none else " " }}</td>
+                    <td>{{ job[4] }}</td>
+                    <td>
+                        <a href="{{ url_for('modify_job', job_id=job[0]) }}"
+                           type="button"
+                           class="btn btn-primary">
+                            Modify
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
+
+    <!-- pagination 新增分页器-->
+    {{ pagination.info|safe }}
+    {{ pagination.links|safe }}
+</div>
 {% endblock %}
