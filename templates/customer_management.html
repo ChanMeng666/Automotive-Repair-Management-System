@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Title Block -->
+    <title>{% block title %} Customer Management {% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+            crossorigin="anonymous">
+</head>
+<body>
+    <!-- Breadcrumb Block -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Customer Management</li>
+        </ol>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-md-8">
+                <!-- Heading -->
+                <h1>Customer List</h1>
+            </div>
+            <div class="col-md-4">
+                <!-- Button Group -->
+                <div class="btn-group" role="group">
+                    <div class="btn-group" role="group">
+                        <button class="btn btn-danger" onclick="location.href='{{ url_for('add_customer') }}'">Add Customer</button>
+                        <button class="btn btn-warning" onclick="location.href='{{ url_for('add_service') }}'">Add Service</button>
+                        <button class="btn btn-info" onclick="location.href='{{ url_for('add_part') }}'">Add Part</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Form -->
+        <form class="d-flex align-items-center mb-4">
+            <!-- Selection Options -->
+            <select class="form-select me-3" id="selection" name="selection">
+                <option selected>Choose...</option>
+                <option value="First Name" {% if request.args.get('selection') == "First Name" %} selected {% endif %}>First Name</option>
+                <option value="Family Name" {% if request.args.get('selection') == "Family Name" %} selected {% endif %}>Family Name</option>
+            </select>
+
+            <!-- Search Input -->
+            <input type="text"
+                class="form-control me-3"
+                placeholder="Incomplete information can be entered for fuzzy search"
+                id="search"
+                name="search"
+                value="{{ request.args.get('search') }}"
+            >
+
+            <!-- Search Button -->
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+
+        <!-- No search result warning -->
+        {% if no_result %}
+            <div class="alert alert-warning" role="alert">
+                No search found, please re-enter.
+            </div>
+        {% endif %}
+
+        <!-- Table List -->
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Customer ID</th>
+                        <th>First Name</th>
+                        <th>Family Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Loop to display customers -->
+                    {% for customer in customers %}
+                        <tr>
+                            <td>{{ customer[0] }}</td>
+                            <td>{{ customer[1] }}</td>
+                            <td>{{ customer[2] }}</td>
+                            <td>{{ customer[3] }}</td>
+                            <td>{{ customer[4] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {{ pagination.info|safe }}
+        {{ pagination.links|safe }}
+    </div>
+</body>
+</html>

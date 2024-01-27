@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- Page Title -->
+    <title>Add Service</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+          crossorigin="anonymous">
+</head>
+<body>
+    <!-- Navigation Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('customer_management') }}">Customer Management</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Add Service</li>
+        </ol>
+    </nav>
+
+    <!-- Main container -->
+    <div class="container">
+
+        <!-- Page Heading -->
+        <h1>Add Service</h1>
+
+        <!-- Service Form -->
+        <form action="" method="POST">
+
+            <!-- Input: Service Name -->
+            <label for="service_name">Service Name</label>
+            <input type="text" id="service_name" name="service_name" required>
+
+            <!-- Input: Cost -->
+            <label for="cost">Cost</label>
+            <input type="text" id="cost" name="cost" required>
+
+            <!-- Confirm Button -->
+            <button type="submit" class="btn btn-success">Confirm</button>
+        </form>
+    </div>
+</body>
+</html>

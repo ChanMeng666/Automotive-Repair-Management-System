@@ -1,68 +1,106 @@
 {% extends "base.html" %}
 
 {% block title %}
-Modify Job
+    Modify Job
 {% endblock %}
 
 {% block content %}
-<div class="container my-4">
-    <h2 class="text-center mb-5">Modify Job</h2>
+    <!-- Content Block -->
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">
-                    {{ message }}
+    <!-- Breadcrumb navigation-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('home') }}">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('currentjobs') }}">Current Job</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Modify Job</li>
+        </ol>
+    </nav>
+
+    <!-- Accordion Component -->
+    <div class="accordion" id="accordionPanelsStayOpenExample">
+        <!-- Accordion Item: Customer Information -->
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#panelsStayOpen-collapseOne"
+                        aria-expanded="false"
+                        aria-controls="panelsStayOpen-collapseOne">
+                    Customer Information
+                </button>
+            </h2>
+            <div id="panelsStayOpen-collapseOne"
+                 class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    <!-- Loop to display customer info -->
+                    {% for job_id, job_info in job_parts_services_qty.items() %}
+                        Customer ID: {{ job_id }}<br>
+                        Name: {{ job_info.name }}<br>
+                        Date: {{ job_info.date }}
+                    {% endfor %}
                 </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+            </div>
+        </div>
 
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead class="thead-light">
-                <tr>
-                    <th>Customer ID</th>
-                    <th>Name</th>
-                    <th>Date</th>
-                    <th>Part Name</th>
-                    <th>Part Quantity</th>
-                    <th>Service Name</th>
-                    <th>Service Quantity</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for job_id, job_info in job_parts_services_qty.items() %}
-                    <tr>
-                        <td>{{ job_id }}</td>
-                        <td>{{ job_info.name }}</td>
-                        <td>{{ job_info.date }}</td>
-                        <td>
-                            {% for part, quantity in job_info.parts %}
-                                {{ part }}<br>
-                            {% endfor %}
-                        </td>
-                        <td>
-                            {% for part, quantity in job_info.parts %}
-                                {{ quantity }}<br>
-                            {% endfor %}
-                        </td>
-                        <td>
-                            {% for service, quantity in job_info.services %}
-                                {{ service }}<br>
-                            {% endfor %}
-                        </td>
-                        <td>
-                            {% for service, quantity in job_info.services %}
-                                {{ quantity }}<br>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <!-- Accordion Item: Parts Information -->
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#panelsStayOpen-collapseTwo"
+                        aria-expanded="false"
+                        aria-controls="panelsStayOpen-collapseTwo">
+                    Parts Information
+                </button>
+            </h2>
+            <div id="panelsStayOpen-collapseTwo"
+                 class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    <!-- Loop to display part info -->
+                    {% for job_id, job_info in job_parts_services_qty.items() %}
+                        {% for part, quantity in job_info['parts'].items() %}
+                            Part: {{ part }}<br>
+                            Quantity: {{ quantity }}<br>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Accordion Item: Service Information -->
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#panelsStayOpen-collapseThree"
+                        aria-expanded="false"
+                        aria-controls="panelsStayOpen-collapseThree">
+                    Service Information
+                </button>
+            </h2>
+            <div id="panelsStayOpen-collapseThree"
+                 class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    <!-- Loop to display service info -->
+                    {% for job_id, job_info in job_parts_services_qty.items() %}
+                        {% for service, quantity in job_info['services'].items() %}
+                            Service: {{ service }}<br>
+                            Quantity: {{ quantity }}<br>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
     </div>
 
+    <!-- Form to add part -->
     <form method="POST">
         <div class="mb-3">
             <label for="part" class="form-label">Add Part</label>
@@ -73,7 +111,6 @@ Modify Job
                 {% endfor %}
             </select>
         </div>
-
         <div class="mb-3">
             <label for="part_qty" class="form-label">Part Quantity</label>
             <input class="form-control"
@@ -82,10 +119,10 @@ Modify Job
                    name="part_qty"
                    value="{{ part_qty }}">
         </div>
-
         <button type="submit" class="btn btn-primary">Add Part</button>
     </form>
 
+    <!-- Form to add service -->
     <form method="POST">
         <div class="mb-3">
             <label for="service" class="form-label">Add Service</label>
@@ -96,7 +133,6 @@ Modify Job
                 {% endfor %}
             </select>
         </div>
-
         <div class="mb-3">
             <label for="service_qty" class="form-label">Service Quantity</label>
             <input class="form-control"
@@ -105,7 +141,6 @@ Modify Job
                    name="service_qty"
                    value="{{ service_qty }}">
         </div>
-
         <button type="submit" class="btn btn-primary">Add Service</button>
     </form>
 

@@ -1,51 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
+    <!-- Head section begins -->
     <head>
         <meta charset="utf-8" />
-        <!-- Title block to be filled by child templates -->
-        <title>{% block title %} Home {% endblock %}</title>
+        <!-- Title block - can be overridden by child templates -->
+        <title>
+            {% block title %} Home {% endblock %}
+        </title>
+        <!-- CSS reference to Bootstrap -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
               rel="stylesheet"
               integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
               crossorigin="anonymous">
     </head>
+    <!-- Head section ends -->
+
+    <!-- Body section begins -->
     <body>
-        <!-- navbar -->
+        <!-- Navbar starts -->
         <nav class="text-center py-3">
-            <h1 class="display-4">Selwyn Panel Beaters</h1>
+            <h1 class="display-4">Welcome to Selwyn Panel Beaters Online!</h1>
+            <p class="text-center">Please select your portal</p>
             <div class="btn-group" role="group">
-                <a href="{{ url_for('technician') }}" class="btn btn-primary btn-lg fs-4">Technician</a>
-                <button type="button" class="btn btn-secondary btn-lg fs-4">Administrator</button>
+                <a href="{{ url_for('technician') }}"
+                   class="btn btn-primary btn-lg fs-4">Technician</a>
+                <a href="{{ url_for('customer_management') }}"
+                   class="btn btn-dark btn-lg fs-4">Administrator</a>
             </div>
         </nav>
+        <!-- Navbar ends -->
+
+        <!-- Content Section Starts -->
         <section class="content">
-            <!-- header block to be filled by child templates -->
-            <header>{% block header %}{% endblock %}</header>
-            <!-- Display flashed messages -->
+            <!-- Header block - to be filled by child templates -->
+            <header>
+                {% block header %}{% endblock %}
+            </header>
+            <!-- Flashed messages from Flask -->
             {% for message in get_flashed_messages() %}
                 <div class="flash">{{ message }}</div>
             {% endfor %}
-            <!-- Content block to be filled by child templates -->
+            <!-- Content block - to be filled by child templates -->
             {% block content %}{% endblock %}
         </section>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-                integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-                crossorigin="anonymous">
-        </script>
-        <script>
-            (() => {
-                'use strict';
-                const forms = document.querySelectorAll('.needs-validation');
-                Array.from(forms).forEach(form => {
-                    form.addEventListener('submit', event => {
-                        if (!form.checkValidity()) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                        }
-                        form.classList.add('was-validated');
-                    }, false);
-                });
-            })();
-        </script>
+        <!-- Content Section Ends -->
+
+        <!-- Javascript Section Starts -->
+            <!-- Javascript reference to Bootstrap -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+                    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+                    crossorigin="anonymous">
+            </script>
+            <!-- Inline Javascript -->
+            <script>
+                (() => {
+                    'use strict';
+                    const forms = document.querySelectorAll('.needs-validation');
+                    Array.from(forms).forEach(form => {
+                        form.addEventListener('submit', event => {
+                            if (!form.checkValidity()) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                            }
+                            form.classList.add('was-validated');
+                        }, false);
+                    });
+                })();
+            </script>
+        <!-- Javascript Section Ends -->
     </body>
+    <!-- Body section ends -->
 </html>

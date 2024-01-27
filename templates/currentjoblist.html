@@ -1,70 +1,88 @@
 {% extends "base.html" %}
 
 {% block title %}
-Current Jobs
+    Current Jobs
 {% endblock %}
 
 {% block content %}
-<div class="container my-4">
-    <p class="fw-bold text-uppercase text-center fs-4">Current Job List</p>
+    <!-- Content Block -->
 
-    <form class="d-flex align-items-center mb-4">
-        <select class="form-select me-3" id="selection" name="selection">
-            <option selected>Choose...</option>
-            <option value="Job ID" {% if selection == 'Job ID' %} selected {% endif %}>Job ID</option>
-            <option value="Customer ID" {% if selection == 'Customer ID' %} selected {% endif %}>Customer ID</option>
-            <option value="First Name" {% if selection == 'First Name' %} selected {% endif %}>First Name</option>
-            <option value="Family Name" {% if selection == 'Family Name' %} selected {% endif %}>Family Name</option>
-            <option value="Date" {% if selection == 'Date' %} selected {% endif %}>Date</option>
-        </select>
+    <!-- Breadcrumb navigation-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('home') }}">Home</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Current Job</li>
+        </ol>
+    </nav>
 
-        <input type="text"
-               class="form-control me-3"
-               placeholder="Incomplete information can be entered for fuzzy search"
-               id="search"
-               name="search"
-               value="{{ search }}">
+    <!-- Container for the form and table -->
+    <div class="container my-4">
+        <p class="fw-bold text-uppercase text-center fs-4">Current Job List</p>
 
-        <button type="submit" class="btn btn-primary">Search</button>
-    </form>
+        <!-- Form -->
+        <form class="d-flex align-items-center mb-4">
+            <!-- Selection options -->
+            <select class="form-select me-3" id="selection" name="selection">
+                <option selected>Choose...</option>
+                <option value="Customer ID" {% if selection == 'Customer ID' %} selected {% endif %}>Customer ID</option>
+                <option value="First Name" {% if selection == 'First Name' %} selected {% endif %}>First Name</option>
+                <option value="Family Name" {% if selection == 'Family Name' %} selected {% endif %}>Family Name</option>
+                <option value="Date" {% if selection == 'Date' %} selected {% endif %}>Date</option>
+            </select>
+            <!-- Search input -->
+            <input type="text"
+                   class="form-control me-3"
+                   placeholder="Incomplete information can be entered for fuzzy search"
+                   id="search"
+                   name="search"
+                   value="{{ search }}"
+            >
+            <!-- Search button -->
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
 
-    {% if no_result %}
-        <div class="alert alert-warning" role="alert">
-          No search found, please re-enter.
+        <!-- Warning Alert -->
+        {% if no_result %}
+            <div class="alert alert-warning" role="alert">
+                No search found, please re-enter.
+            </div>
+        {% endif %}
+
+        <!-- Table: Includes headers and data -->
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Customer ID</th>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Modify</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <!-- Inserts job data -->
+                {% for job in job_list %}
+                    <tr>
+                        <td>{{ job[1] }}</td>
+                        <td>{{ job[2] if job[2] is not none else " " }} {{  job[3] if job[3] is not none else " " }}</td>
+                        <td>{{ job[4] }}</td>
+                        <td>
+                            <a href="{{ url_for('modify_job', job_id=job[0]) }}"
+                               type="button"
+                               class="btn btn-primary">
+                                Modify
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
-    {% endif %}
 
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead class="thead-light">
-                <tr>
-                    <th>Customer ID</th>
-                    <th>Name</th>
-                    <th>Date</th>
-                    <th>Modify</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for job in job_list %}
-                <tr>
-                    <td>{{ job[1] }}</td>
-                    <td>{{ job[2] if job[2] is not none else " " }} {{  job[3] if job[3] is not none else " " }}</td>
-                    <td>{{ job[4] }}</td>
-                    <td>
-                        <a href="{{ url_for('modify_job', job_id=job[0]) }}"
-                           type="button"
-                           class="btn btn-primary">
-                            Modify
-                        </a>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+        <!-- Pagination -->
+        {{ pagination.info|safe }}
+        {{ pagination.links|safe }}
     </div>
-
-    <!-- pagination 新增分页器-->
-    {{ pagination.info|safe }}
-    {{ pagination.links|safe }}
-</div>
 {% endblock %}
