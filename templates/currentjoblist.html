@@ -1,29 +1,71 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en"  data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Technician Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
 
-{% block title %}
-    Current Jobs
-{% endblock %}
+<body>
 
-{% block content %}
-    <!-- Content Block -->
 
-    <!-- Breadcrumb navigation-->
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{{ url_for('home') }}">Home</a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">Current Job</li>
-        </ol>
-    </nav>
 
-    <!-- Container for the form and table -->
-    <div class="container my-4">
-        <p class="fw-bold text-uppercase text-center fs-4">Current Job List</p>
+<div class="container-lg text-center">
 
-        <!-- Form -->
-        <form class="d-flex align-items-center mb-4">
-            <!-- Selection options -->
+
+
+
+    <div class="row p-10 text-light bg-dark rounded-3">
+        <div class="col">
+
+            <nav class="navbar navbar-expand-lg bg-body-dark">
+                <div class="container-fluid">
+                    <a class="navbar-brand text-light" href="#">Selwyn Panel Beaters Online |</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link active text-light" aria-current="page" href="#">Technician Home</a>
+                            </li>
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Dropdown
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Action</a></li>
+                                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+
+
+
+                    </div>
+                </div>
+            </nav>
+
+        </div>
+    </div>
+
+
+
+    <div class="row mb-2">
+        <div class="col">
+        <h3 class="text-center">Current Job</h3>
+        </div>
+    </div>
+
+
+
+
+        <div class="row mb-2">
+            <div class="col-md-4">
             <select class="form-select me-3" id="selection" name="selection">
                 <option selected>Choose...</option>
                 <option value="Customer ID" {% if selection == 'Customer ID' %} selected {% endif %}>Customer ID</option>
@@ -31,7 +73,9 @@
                 <option value="Family Name" {% if selection == 'Family Name' %} selected {% endif %}>Family Name</option>
                 <option value="Date" {% if selection == 'Date' %} selected {% endif %}>Date</option>
             </select>
-            <!-- Search input -->
+            </div>
+
+            <div class="col-md-4">
             <input type="text"
                    class="form-control me-3"
                    placeholder="Incomplete information can be entered for fuzzy search"
@@ -39,50 +83,89 @@
                    name="search"
                    value="{{ search }}"
             >
-            <!-- Search button -->
-            <button type="submit" class="btn btn-primary">Search</button>
-        </form>
+            </div>
 
-        <!-- Warning Alert -->
+            <div class="col-md-4">
+                <button class="btn btn-outline-success" type="submit" style="width: 100%;">Search</button>
+            </div>
+
+        </div>
+
+
         {% if no_result %}
             <div class="alert alert-warning" role="alert">
                 No search found, please re-enter.
             </div>
         {% endif %}
 
-        <!-- Table: Includes headers and data -->
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead class="thead-light">
-                    <tr>
-                        <th>Customer ID</th>
-                        <th>Name</th>
-                        <th>Date</th>
-                        <th>Modify</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <!-- Inserts job data -->
-                {% for job in job_list %}
-                    <tr>
-                        <td>{{ job[1] }}</td>
-                        <td>{{ job[2] if job[2] is not none else " " }} {{  job[3] if job[3] is not none else " " }}</td>
-                        <td>{{ job[4] }}</td>
-                        <td>
-                            <a href="{{ url_for('modify_job', job_id=job[0]) }}"
-                               type="button"
-                               class="btn btn-primary">
-                                Modify
-                            </a>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
 
-        <!-- Pagination -->
+
+
+    <div class="row mb-2">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    This is some text within a card body.
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    This is some text within a card body.
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    This is some text within a card body.
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row mb-2">
+        <div class="col">
+            <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Customer ID</th>
+            <th>First Name</th>
+            <th>Family Name</th>
+            <th>Job Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in data %}
+            <tr>
+              <td>{{row[0]}}</td>
+              <td>{{row[1]}}</td>
+              <td>{{row[2]}}</td>
+              <td>{{row[3]}}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+        </div>
+    </div>
+
+
+
+
+
+    <div class="row mb-2 justify-content-end">
+
+    </div>
+
         {{ pagination.info|safe }}
         {{ pagination.links|safe }}
-    </div>
-{% endblock %}
+
+
+</div>
+
+
+
+</body>
+</html>
