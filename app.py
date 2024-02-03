@@ -291,5 +291,25 @@ def add_part():
 
     return render_template('add_part.html')
 
+
+@app.route("/new_job/<int:customer_id>", methods=['GET', 'POST'])
+def new_job(customer_id):
+    """New Job route. Displays a form to add new job for a customer."""
+    connection = getCursor()
+    if request.method == 'POST':
+        job_date = request.form.get('job_date')
+        if job_date >= datetime.today().strftime('%Y-%m-%d'):
+            connection.execute(
+                f"INSERT INTO job(job_date, customer, completed, paid) VALUES (%s, %s, %s, %s);",
+                (job_date, customer_id, 0, 0)
+            )
+            flash('Added new job successfully.')
+            return redirect(url_for('customer_management'))
+        else:
+            flash('Job Date should be today or in the future!')
+    connection.execute("SELECT * FROM customer WHERE customer_id = %s;", (customer_id,))
+    customer = connection.fetchone()
+    return render_template('new_job.html', customer=customer)
+
 if __name__ == "__main__":
     app.run(debug=True)

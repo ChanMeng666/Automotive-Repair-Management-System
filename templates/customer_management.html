@@ -82,15 +82,17 @@
                 </thead>
                 <tbody>
                     <!-- Loop to display customers -->
-                    {% for customer in customers %}
-                        <tr>
-                            <td>{{ customer[0] }}</td>
-                            <td>{{ customer[1] }}</td>
-                            <td>{{ customer[2] }}</td>
-                            <td>{{ customer[3] }}</td>
-                            <td>{{ customer[4] }}</td>
-                        </tr>
-                    {% endfor %}
+                        {% for customer in customers %}
+                            <tr>
+                                <td>{{ customer[0] }}</td>
+                                <td>{{ customer[1] }}</td>
+                                <td>{{ customer[2] }}</td>
+                                <td>{{ customer[3] }}</td>
+                                <td>{{ customer[4] }}</td>
+                                <!-- Add the select button -->
+                                <td><button class="btn btn-success" onclick="location.href='{{ url_for('new_job', customer_id=customer[0]) }}'">Select</button></td>
+                            </tr>
+                        {% endfor %}
                 </tbody>
             </table>
         </div>
