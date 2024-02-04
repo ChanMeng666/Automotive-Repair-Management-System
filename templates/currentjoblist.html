@@ -88,71 +88,75 @@
 
         <div class="row mb-2">
             <div class="col">
-                <div class="card">
-                    <div class="card-body">
-                        This is some text within a card body.
+
+                <form action="/currentjoblist" method="post">
+                    {% if no_result %}
+                        <div class="alert alert-warning" role="alert">
+                            No search found, please re-enter.
+                        </div>
+                    {% endif %}
+
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Select</th>
+                                <th>Customer ID</th>
+                                <th>Customer Name</th>
+                                <th>Job Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in data %}
+                            <tr>
+                                <td><input type="radio" name="jobSelect" id="jobSelect" value="{{ row[0] }}"></td>
+                                <td>{{row[0]}}</td>
+                                <td>{{row[1] if row[1] is not none else "" }} {{ row[2] if row[2] is not none else "" }}</td>
+                                <td>{{row[3]}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <div class="row mb-2">
+                        <div class="col">
+                            <div class="card">
+                                <div class="card-body">
+                                    <button type="submit" class="btn btn-outline-success">Confirm Selection</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card">
-                    <div class="card-body">
-                        This is some text within a card body.
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card">
-                    <div class="card-body">
-                        This is some text within a card body.
-                    </div>
-                </div>
+
+                </form>
+
             </div>
         </div>
 
         <div class="row mb-2">
             <div class="col">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Customer ID</th>
-                            <th>Customer Name</th>
-                            <th>Job Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for row in data %}
-                        <tr>
-                            <td>{{row[0]}}</td>
-                            <td>{{row[1] if row[1] is not none else "" }} {{ row[2] if row[2] is not none else "" }}</td>
-                            <td>{{row[3]}}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <div class="card">
+                    <div class="card-body">
+                        This is some text within a card body.
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        This is some text within a card body.
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        {{ pagination.info|safe }}
+                        {{ pagination.links|safe }}
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="row mb-2">
-            <div class="col">
-                <div class="card">
-                    <div class="card-body">
-                        This is some text within a card body.
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card">
-                    <div class="card-body">
-                        This is some text within a card body.
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                {{ pagination.info|safe }}
-                {{ pagination.links|safe }}
-            </div>
-        </div>
     </div>
 </body>
 </html>

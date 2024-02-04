@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from flask_paginate import Pagination
 import mysql.connector
 import connect
@@ -35,9 +35,14 @@ def hello_world():
     return render_template("base.html")
 
 
-@app.route('/currentjoblist', methods=['GET'])
+@app.route('/currentjoblist', methods=['GET', 'POST'])
 def current_job_list():
     cursor = getCursor()
+
+    if request.method == "POST":
+        selected_job = request.form.get('jobSelect')
+        return redirect(url_for('modify_job', customer_id=selected_job))
+
 
     page = int(request.args.get('page', 1))
     selection = request.args.get('selection', '')
@@ -80,16 +85,34 @@ def current_job_list():
 
     data = cursor.fetchall()
 
+    no_result = False
+    if len(data) == 0:
+        no_result = True
+
     pagination = Pagination(page=page, total=total, per_page=per_page, record_name=' current jobs')
 
     return render_template(
         'currentjoblist.html',
         data=data,
         pagination=pagination,
+        no_result=no_result,
         selection=selection,
         search=search
     )
 
+@app.route('/modifyjob', methods=['GET', 'POST'])
+def modify_job():
+    customer_id = request.args.get('customer_id')
+
+    cursor = getCursor()
+    cursor.execute(
+        "SELECT customer.customer_id, customer.first_name, customer.family_name, job.job_date "
+        "FROM job "
+        "INNER JOIN customer ON job.customer = customer.customer_id "
+        "WHERE customer.customer_id=%s;", (customer_id,))
+    data = cursor.fetchall()
+
+    return render_template("modify_job.html", data=data)
 
 if __name__ == '__main__':
     app.run()
