@@ -75,18 +75,21 @@
                                 </form>
                             {% endfor %}
 
-                            <form class="row mb-2" method="POST" name="addService">
-                                <div class="input-group input-group-sm">
-                                    <select class="form-select me-3" id="selectionService" name="selectionService">
-                                        <option selected>Choose...</option>
-                                        {% for service_name in service_names %}
-                                            <option value="{{ service_name[0] }}">{{ service_name[1] }}</option>
-                                        {% endfor %}
-                                    </select>
-                                    <input type="number" class="form-control" name="qtyService">
-                                    <button type="submit" class="btn btn-outline-success">Add</button>
-                                </div>
-                            </form>
+                            {% for row in data %}
+                                <form class="row mb-2" method="POST" name="addService">
+                                    <div class="input-group input-group-sm">
+                                        <select class="form-select me-3" id="selectionService" name="selectionService">
+                                            <option selected>Choose...</option>
+                                            {% for service_name in service_names %}
+                                                <option value="{{ service_name[0] }}">{{ service_name[1] }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <input type="number" class="form-control" name="qtyService">
+                                        <button type="submit" class="btn btn-outline-success" {% if row[4] == 1 %}disabled{% endif %}>Add</button>
+                                    </div>
+                                </form>
+                            {% endfor %}
+
                         </div>
                     </div>
                 </div>
@@ -95,7 +98,6 @@
                     <div class="card">
                         <h5>Used Parts</h5>
                         <div class="card-body">
-                            {#不知道form是否已实现，目前在页面上没有显示。先暂存，等到管理员页面再验证。联动app.py的parts一段。#}
                             {% for part in parts %}
                                 <form class="row mb-2">
                                     <div class="input-group input-group-sm">
@@ -108,18 +110,21 @@
                                 </form>
                             {% endfor %}
 
-                            <form class="row mb-2" method="POST" name="addPart">
-                                <div class="input-group input-group-sm">
-                                    <select class="form-select me-3" id="selectionPart" name="selectionPart">
-                                        <option selected>Choose...</option>
-                                        {% for part_name in part_names %}
-                                            <option value="{{ part_name[0] }}">{{ part_name[1] }}</option>
-                                        {% endfor %}
-                                    </select>
-                                    <input type="number" class="form-control" name="qtyPart">
-                                    <button type="submit" class="btn btn-outline-success">Add</button>
-                                </div>
-                            </form>
+                            {% for row in data %}
+                                <form class="row mb-2" method="POST" name="addPart">
+                                    <div class="input-group input-group-sm">
+                                        <select class="form-select me-3" id="selectionPart" name="selectionPart">
+                                            <option selected>Choose...</option>
+                                            {% for part_name in part_names %}
+                                                <option value="{{ part_name[0] }}">{{ part_name[1] }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <input type="number" class="form-control" name="qtyPart">
+                                        <button type="submit" class="btn btn-outline-success" {% if row[4] == 1 %}disabled{% endif %}>Add</button>
+                                    </div>
+                                </form>
+                            {% endfor %}
+
                         </div>
                     </div>
                 </div>
@@ -130,19 +135,18 @@
 
                         <div class="card-body">
                             {% for row in data %}
-                                <form class="row mb-2">
+                                <form class="row mb-2" method="POST">
                                     <div class="input-group input-group-sm">
                                         <span class="input-group-text">Completion Status</span>
-                                        <input type="text" class="form-control" value="{{ 'YES' if row[4]==1 else 'NO' }}" {% if row[4] == 1 %}readonly{% endif %}>
+                                        <input type="text" class="form-control" name="completionStatus" value="{{ 'YES' if row[4]==1 else 'NO' }}" {% if row[4] == 1 %}readonly{% endif %}>
                                         <button type="submit" class="btn btn-outline-success" {% if row[4] == 1 %}disabled{% endif %}>Modify</button>
                                     </div>
                                 </form>
 
-                                {#这个功能还没做#}
-                                <form class="row mb-2">
+                                <form class="row mb-2" name="totalCost">
                                     <div class="input-group input-group-sm">
                                         <span class="input-group-text">Total Cost</span>
-                                        <input type="text" class="form-control" value="" readonly>
+                                        <input type="text" class="form-control" value="{{ total_cost }}" readonly>
                                     </div>
                                 </form>
 

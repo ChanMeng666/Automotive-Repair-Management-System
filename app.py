@@ -106,7 +106,15 @@ def modify_job():
 
     cursor = getCursor()
 
+    # Fetching the latest job_id
+    cursor.execute(
+        "SELECT job_id FROM job WHERE customer=%s ORDER BY job_date DESC LIMIT 1;",
+        (customer_id,)
+    )
+    job_id = cursor.fetchone()[0]
+
     if request.method == 'POST':
+
         service_id = request.form.get('selectionService')
         qtyService = request.form.get('qtyService')
 
@@ -116,6 +124,8 @@ def modify_job():
                 (job_id, service_id, qtyService)
             )
 
+            return redirect(url_for('modify_job', customer_id=customer_id))
+
         part_id = request.form.get('selectionPart')
         qtyPart = request.form.get('qtyPart')
 
@@ -124,8 +134,17 @@ def modify_job():
                 "INSERT INTO job_part (job_id, part_id, qty) VALUES (%s, %s, %s)",
                 (job_id, part_id, qtyPart)
             )
+            return redirect(url_for('modify_job', customer_id=customer_id))
 
-        return redirect(url_for('modify_job', customer_id=customer_id))
+        completion_status = request.form.get('completionStatus')
+
+        if completion_status.lower() == 'yes':
+            cursor.execute(
+                "UPDATE job SET completed=1 WHERE job_id=%s",
+                (job_id,)
+            )
+
+            return redirect(url_for('modify_job', customer_id=customer_id))
 
     cursor.execute(
         "SELECT customer.customer_id, customer.first_name, customer.family_name, job.job_date, job.completed, job.paid "
@@ -171,15 +190,18 @@ def modify_job():
 
     part_names = cursor.fetchall()
 
+    total_cost = sum([row[1]*row[2] for row in services]) + sum([row[1]*row[2] for row in parts])
+
     return render_template(
         "modify_job.html",
         data=data,
         services=services,
         parts=parts,
         service_names=service_names,
-        part_names=part_names
+        part_names=part_names,
+        total_cost=total_cost
     )
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
