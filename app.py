@@ -99,11 +99,9 @@ def current_job_list():
         search=search
     )
 
-
 @app.route('/modifyjob', methods=['GET', 'POST'])
 def modify_job():
     customer_id = request.args.get('customer_id')
-
     cursor = getCursor()
 
     # Fetching the latest job_id
@@ -113,8 +111,33 @@ def modify_job():
     )
     job_id = cursor.fetchone()[0]
 
-    if request.method == 'POST':
+    def calculate_total_cost():
+        cursor.execute(
+            "SELECT sum(service.cost * job_service.qty) "
+            "FROM service JOIN job_service ON service.service_id = job_service.service_id "
+            "JOIN job ON job_service.job_id = job.job_id "
+            "WHERE job.job_id=%s",
+            (job_id,)
+        )
+        service_cost = cursor.fetchone()[0] or 0
 
+        cursor.execute(
+            "SELECT sum(part.cost * job_part.qty) "
+            "FROM part JOIN job_part ON part.part_id = job_part.part_id "
+            "JOIN job ON job_part.job_id = job.job_id "
+            "WHERE job.job_id=%s",
+            (job_id,)
+        )
+        part_cost = cursor.fetchone()[0] or 0
+
+        total_cost = service_cost + part_cost
+        cursor.execute(
+            "UPDATE job SET total_cost=%s WHERE job_id=%s",
+            (total_cost, job_id,)
+        )
+        return total_cost
+
+    if request.method == 'POST':
         service_id = request.form.get('selectionService')
         qtyService = request.form.get('qtyService')
 
@@ -123,7 +146,6 @@ def modify_job():
                 "INSERT INTO job_service (job_id, service_id, qty) VALUES (%s, %s, %s)",
                 (job_id, service_id, qtyService)
             )
-
             return redirect(url_for('modify_job', customer_id=customer_id))
 
         part_id = request.form.get('selectionPart')
@@ -143,54 +165,70 @@ def modify_job():
                 "UPDATE job SET completed=1 WHERE job_id=%s",
                 (job_id,)
             )
+            return redirect(url_for('modify_job', customer_id=customer_id))
 
+        # 删除服务和零件 功能待做！！！
+        service_id_to_delete = request.form.get('deleteService')
+
+        if service_id_to_delete:
+            cursor.execute(
+                "DELETE FROM job_service WHERE job_id=%s AND service_id=%s",
+                (job_id, service_id_to_delete)
+            )
+            return redirect(url_for('modify_job', customer_id=customer_id))
+
+        part_id_to_delete = request.form.get('deletePart')
+
+        if part_id_to_delete:
+            cursor.execute(
+                "DELETE FROM job_part WHERE job_id=%s AND part_id=%s",
+                (job_id, part_id_to_delete)
+            )
             return redirect(url_for('modify_job', customer_id=customer_id))
 
     cursor.execute(
-        "SELECT customer.customer_id, customer.first_name, customer.family_name, job.job_date, job.completed, job.paid "
+        "SELECT customer.customer_id, customer.first_name, customer.family_name, " 
+        "job.job_date, job.completed, job.paid "
         "FROM job "
         "INNER JOIN customer ON job.customer = customer.customer_id "
         "WHERE customer.customer_id=%s;",
         (customer_id,)
     )
-
     data = cursor.fetchall()
 
     cursor.execute(
-        "SELECT service.service_name, service.cost, job_service.qty "
+        "SELECT service.service_id, service.service_name, service.cost, job_service.qty "
         "FROM service "
         "JOIN job_service ON service.service_id = job_service.service_id "
         "JOIN job ON job_service.job_id = job.job_id "
         "WHERE job.customer=%s;",
         (customer_id,)
     )
-
     services = cursor.fetchall()
 
     cursor.execute(
-        "SELECT part.part_name, part.cost, job_part.qty "
+        "SELECT part.part_id, part.part_name, part.cost, job_part.qty "
         "FROM part "
         "JOIN job_part ON part.part_id = job_part.part_id "
         "JOIN job ON job_part.job_id = job.job_id "
         "WHERE job.customer=%s;",
         (customer_id,)
     )
-
     parts = cursor.fetchall()
 
     cursor.execute(
-        "SELECT service_id, service_name FROM service ORDER BY service_name"
+        "SELECT service_id, service_name "
+        "FROM service ORDER BY service_name"
     )
-
     service_names = cursor.fetchall()
 
     cursor.execute(
-        "SELECT part_id, part_name FROM part ORDER BY part_name"
+        "SELECT part_id, part_name "
+        "FROM part ORDER BY part_name"
     )
-
     part_names = cursor.fetchall()
 
-    total_cost = sum([row[1]*row[2] for row in services]) + sum([row[1]*row[2] for row in parts])
+    total_cost = calculate_total_cost()
 
     return render_template(
         "modify_job.html",
@@ -202,6 +240,31 @@ def modify_job():
         total_cost=total_cost
     )
 
+@app.route('/customerlist', methods=['GET', 'POST'])
+def customer_list():
+    cursor = getCursor()
+
+    cursor.execute(
+        "SELECT customer.customer_id, customer.first_name, "
+        "customer.family_name, customer.email, customer.phone "
+        "FROM customer "
+        "ORDER BY customer.family_name, customer.first_name"
+    )
+
+    customers = cursor.fetchall()
+    job_data = {}
+
+    for customer in customers:
+        cursor.execute(
+            "SELECT job.job_date, job.total_cost "
+            "FROM job "
+            "WHERE customer=%s;", (customer[0],)
+        )
+
+        jobs = cursor.fetchall()
+        job_data[customer[0]] = jobs
+
+    return render_template("customer_list.html", customers=customers, job_data=job_data)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Administrator Home</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    </head>
+    <body>
+        <div class="container-lg text-center">
+            <div class="row p-10 text-light bg-dark rounded-3">
+                <div class="col">
+                    <nav class="navbar navbar-expand-lg bg-body-dark">
+                        <div class="container-fluid">
+                            <a class="navbar-brand text-light" href="/">Selwyn Panel Beaters Online |</a>
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                    <li class="nav-item">
+                                        <a class="nav-link active text-light" aria-current="page" href="/customerlist">Administrator Home</a>
+                                    </li>
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Dropdown
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#">Action</a></li>
+                                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                                            <li>
+                                                <hr class="dropdown-divider">
+                                            </li>
+                                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col">
+                    <h3 class="text-center">Customer List</h3>
+                </div>
+            </div>
+
+            <form action="/customerlist" method="get">
+                <div class="row mb-2">
+                    <div class="col-md-4">
+                        <select class="form-select me-3" id="selection" name="selection">
+                            <option selected>Choose...</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control me-3" placeholder="Fuzzy search possible" id="search" name="search" value="">
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-outline-success" type="submit" style="width: 100%;">Search</button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="row mb-2">
+                <div class="accordion accordion-flush" id="accordionCustomers">
+                    {% for idx in range(customers|length) %}
+                        {% set customer = customers[idx] %}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading-{{idx}}">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{idx}}" aria-expanded="false" aria-controls="collapse-{{idx}}">
+                                    <input type="radio" name="customerSelect" id="customerSelect" value="">
+                                    {{ customer[1] }}  {{ customer[2] }}  |  {{ customer[3] }}  |  {{ customer[4] }}
+                                </button>
+                            </h2>
+                            <div id="collapse-{{idx}}" class="accordion-collapse collapse" aria-labelledby="heading-{{idx}}" data-bs-parent="#accordionCustomers">
+                                <div class="accordion-body">
+                                    <div class="row mb-2">
+                                        <div class="col">
+                                            <form action="/currentjoblist" method="post">
+                                                <table class="table table-success table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Select</th>
+                                                            <th>Job Date</th>
+                                                            <th>Total Cost</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for job in job_data[customer[0]] %}
+                                                        <tr>
+                                                            <td><input type="radio" name="jobSelect" id="jobSelect" value=""></td>
+                                                            <td>{{ job[0] }}</td>
+                                                            <td>{{ job[1] }}</td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                                <div class="row mb-2">
+                                                    <div class="col">
+                                                        <button type="submit" class="btn btn-outline-success">Pay Bill</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col">
+                    <button type="submit" class="btn btn-outline-primary">Schedule Job</button>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">This is some text within a card body.</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">This is some text within a card body.</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    </body>
+</html>

@@ -59,23 +59,27 @@
             </div>
 
             <div class="row mb-2">
-                <div class="col">
+                <div class="col" name="completedServices">
                     <div class="card">
                         <h5> Completed Services </h5>
                         <div class="card-body">
-                            {% for service in services %}
-                                <form class="row mb-2">
-                                    <div class="input-group input-group-sm">
-                                        <span class="input-group-text">{{ service[0] }}</span>
-                                        <input type="text" class="form-control" value="{{ service[1] }}" readonly>
-                                        <span class="input-group-text">$</span>
-                                        <span class="input-group-text">×</span>
-                                        <input type="text" class="form-control" value="{{ service[2] }}" readonly>
-                                    </div>
-                                </form>
-                            {% endfor %}
 
                             {% for row in data %}
+                                {% for service in services %}
+                                    <form class="row mb-2" method="POST">
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text">{{ service[1] }}</span>
+                                            <input type="text" class="form-control" value="{{ service[2] }}" readonly>
+                                            <span class="input-group-text">$</span>
+                                            <span class="input-group-text">×</span>
+                                            <input type="text" class="form-control" value="{{ service[3] }}" readonly>
+
+                                            <input type="hidden" name="deleteService" value="{{ service[0] }}">
+                                            <button type="submit" class="btn btn-outline-danger" {% if row[4] == 1 %}disabled{% endif %}>Delete</button>
+                                        </div>
+                                    </form>
+                                {% endfor %}
+
                                 <form class="row mb-2" method="POST" name="addService">
                                     <div class="input-group input-group-sm">
                                         <select class="form-select me-3" id="selectionService" name="selectionService">
@@ -89,28 +93,33 @@
                                     </div>
                                 </form>
                             {% endfor %}
-
                         </div>
+
                     </div>
                 </div>
 
-                <div class="col">
+                <div class="col" name="usedParts">
                     <div class="card">
                         <h5>Used Parts</h5>
                         <div class="card-body">
-                            {% for part in parts %}
-                                <form class="row mb-2">
-                                    <div class="input-group input-group-sm">
-                                        <span class="input-group-text">{{ part[0] }}</span>
-                                        <input type="text" class="form-control" value="{{ part[1] }}" readonly>
-                                        <span class="input-group-text">$</span>
-                                        <span class="input-group-text">×</span>
-                                        <input type="text" class="form-control" value="{{ part[2] }}" readonly>
-                                    </div>
-                                </form>
-                            {% endfor %}
 
                             {% for row in data %}
+                                {% for part in parts %}
+                                    <form class="row mb-2" method="POST">
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text">{{ part[1] }}</span>
+                                            <input type="text" class="form-control" value="{{ part[2] }}" readonly>
+                                            <span class="input-group-text">$</span>
+                                            <span class="input-group-text">×</span>
+                                            <input type="text" class="form-control" value="{{ part[3] }}" readonly>
+
+                                            <input type="hidden" name="deletePart" value="{{ part[0] }}">
+                                            <button type="submit" class="btn btn-outline-danger" {% if row[4] == 1 %}disabled{% endif %}>Delete</button>
+                                        </div>
+                                    </form>
+                                {% endfor %}
+
+
                                 <form class="row mb-2" method="POST" name="addPart">
                                     <div class="input-group input-group-sm">
                                         <select class="form-select me-3" id="selectionPart" name="selectionPart">
@@ -128,8 +137,10 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="col">
+            <div class="row mb-2">
+                <div class="col" name="jobStatus">
                     <div class="card">
                         <h5>Job Status</h5>
 
