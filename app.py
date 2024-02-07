@@ -43,9 +43,9 @@ def current_job_list():
         selected_job = request.form.get('jobSelect')
         return redirect(url_for('modify_job', customer_id=selected_job))
 
-    page = int(request.args.get('page', 1))
     selection = request.args.get('selection', '')
     search = request.args.get('search', '')
+    page = int(request.args.get('page', 1))
     per_page = 5
     offset = (page - 1) * per_page
 
@@ -101,8 +101,9 @@ def current_job_list():
 
 @app.route('/modifyjob', methods=['GET', 'POST'])
 def modify_job():
-    customer_id = request.args.get('customer_id')
     cursor = getCursor()
+
+    customer_id = request.args.get('customer_id')
 
     # Fetching the latest job_id
     cursor.execute(
@@ -244,27 +245,92 @@ def modify_job():
 def customer_list():
     cursor = getCursor()
 
-    cursor.execute(
-        "SELECT customer.customer_id, customer.first_name, "
-        "customer.family_name, customer.email, customer.phone "
-        "FROM customer "
-        "ORDER BY customer.family_name, customer.first_name"
-    )
+    if request.method == 'POST':
+        first_name = request.form.get('first_name', '')
+        family_name = request.form.get('family_name', '')
+        email = request.form.get('email', '')
+        phone = request.form.get('phone', '')
 
-    customers = cursor.fetchall()
+        if family_name and email and phone:
+            # cursor = getCursor()
+            cursor.execute(
+                "INSERT INTO customer (first_name, family_name, email, phone) VALUES (%s, %s, %s, %s);",
+                (first_name, family_name, email, phone)
+            )
+        else:
+            # Handle the case where required fields are missing.
+            return "Error: Family Name, Email, and Phone must be provided."
+    # Existing GET request handling code follows...
+
+    selection = request.args.get('selection', '')
+    search = request.args.get('search', '')
+    page = int(request.args.get('page', 1))
+    per_page = 5
+    offset = (page - 1) * per_page
+
+    if selection == 'Family Name':
+        selection_query = 'customer.family_name'
+    elif selection == 'First Name':
+        selection_query = 'customer.first_name'
+    else:
+        selection_query = None
+
+    # customers = []
+
+    no_result = False
+
+    if selection_query:
+        search = f'%{search}%'
+        cursor.execute(
+            f"SELECT COUNT(*) FROM customer WHERE {selection_query} LIKE %s ;", (search,)
+        )
+        total = cursor.fetchone()[0]
+
+        if total == 0:
+            no_result = True
+
+        cursor.execute(
+            f"SELECT customer.customer_id, customer.first_name, "
+            f"customer.family_name, customer.email, customer.phone "
+            f"FROM customer "
+            f"WHERE {selection_query} LIKE %s "
+            f"ORDER BY customer.family_name, customer.first_name "
+            f"LIMIT %s OFFSET %s;",
+            (search, per_page, offset)
+        )
+        customers = cursor.fetchall()
+
+    else:
+        cursor.execute("SELECT COUNT(*) FROM customer")
+        total = cursor.fetchone()[0]
+
+        cursor.execute(
+            "SELECT customer.customer_id, customer.first_name, "
+            "customer.family_name, customer.email, customer.phone "
+            "FROM customer "
+            "ORDER BY customer.family_name, customer.first_name "
+            f"LIMIT %s OFFSET %s;",
+            (per_page, offset)
+        )
+        customers = cursor.fetchall()
+
+    customer_ids = [customer[0] for customer in customers]
     job_data = {}
 
-    for customer in customers:
+    for customer_id in customer_ids:
         cursor.execute(
             "SELECT job.job_date, job.total_cost "
             "FROM job "
-            "WHERE customer=%s;", (customer[0],)
+            "WHERE customer=%s;", (customer_id,)
         )
 
         jobs = cursor.fetchall()
-        job_data[customer[0]] = jobs
+        if jobs:
+            job_data[customer_id] = jobs
 
-    return render_template("customer_list.html", customers=customers, job_data=job_data)
+    pagination = Pagination(page=page, total=total, per_page=per_page, record_name='customers')
+
+    return render_template("customer_list.html", customers=customers, job_data=job_data, pagination=pagination, selection=selection, search=search, no_result=no_result)
 
 if __name__ == '__main__':
     app.run(debug=True)
