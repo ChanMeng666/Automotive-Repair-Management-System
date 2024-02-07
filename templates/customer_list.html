@@ -78,11 +78,11 @@
                     <div class="card-header" style="background-color: #FFE55F; color: #FFFFFF;">Add Service</div>
                     <div class="card-body">
 
-                        <select class="form-select mb-2" size="3" aria-label="Size 3 select example">
+                        <select class="form-select mb-2" size="5">
                             <option selected>Existing services and costs...</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                            {% for service in services %}
+                                <option value="{{ service[0] }}"> {{ service[1] }} -- {{ service[2] }} $ </option>
+                            {% endfor %}
                         </select>
 
 
@@ -90,12 +90,12 @@
 
                             <div class="input-group input-group-sm mb-2">
                                 <span class="input-group-text">Service Name</span>
-                                <input type="text" class="form-control">
+                                <input type="text" class="form-control" name="service_name" required>
                             </div>
 
                             <div class="input-group input-group-sm mb-2">
                                 <span class="input-group-text">Service Cost</span>
-                                <input type="number" class="form-control" name="serviceCost" step="0.01">
+                                <input type="number" class="form-control" name="service_cost" step="0.01" required>
                                 <span class="input-group-text">$</span>
                             </div>
 
@@ -110,11 +110,11 @@
                     <div class="card-header" style="background-color: #65BFDB; color: #FFFFFF;">Add Part</div>
                     <div class="card-body">
 
-                        <select class="form-select mb-2" size="3" aria-label="Size 3 select example">
+                        <select class="form-select mb-2" size="5">
                             <option selected>Existing parts and costs...</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                            {% for part in parts %}
+                                <option value="{{ part[0] }}"> {{ part[1] }} -- {{ part[2] }} $ </option>
+                            {% endfor %}
                         </select>
 
 
@@ -122,12 +122,12 @@
 
                             <div class="input-group input-group-sm mb-2">
                                 <span class="input-group-text">Part Name</span>
-                                <input type="text" class="form-control">
+                                <input type="text" class="form-control" name="part_name">
                             </div>
 
                             <div class="input-group input-group-sm mb-2">
                                 <span class="input-group-text">Part Cost</span>
-                                <input type="number" class="form-control" name="serviceCost" step="0.01">
+                                <input type="number" class="form-control"  name="part_cost" step="0.01">
                                 <span class="input-group-text">$</span>
                             </div>
 

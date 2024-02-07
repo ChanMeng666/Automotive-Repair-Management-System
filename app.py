@@ -246,21 +246,49 @@ def customer_list():
     cursor = getCursor()
 
     if request.method == 'POST':
-        first_name = request.form.get('first_name', '')
-        family_name = request.form.get('family_name', '')
-        email = request.form.get('email', '')
-        phone = request.form.get('phone', '')
+        if 'first_name' in request.form:
+            first_name = request.form.get('first_name', '')
+            family_name = request.form.get('family_name', '')
+            email = request.form.get('email', '')
+            phone = request.form.get('phone', '')
 
-        if family_name and email and phone:
-            # cursor = getCursor()
-            cursor.execute(
-                "INSERT INTO customer (first_name, family_name, email, phone) VALUES (%s, %s, %s, %s);",
-                (first_name, family_name, email, phone)
-            )
-        else:
-            # Handle the case where required fields are missing.
-            return "Error: Family Name, Email, and Phone must be provided."
+            if family_name and email and phone:
+                # cursor = getCursor()
+                cursor.execute(
+                    "INSERT INTO customer (first_name, family_name, email, phone) VALUES (%s, %s, %s, %s);",
+                    (first_name, family_name, email, phone)
+                )
+            else:
+                # Handle the case where required fields are missing.
+                return "Error: Family Name, Email, and Phone must be provided."
+
+        elif 'service_name' in request.form:
+            service_name = request.form.get('service_name', '')
+            service_cost = request.form.get('service_cost', '')
+
+            if service_name and service_cost:
+                cursor.execute(
+                    "INSERT INTO service (service_name, cost) VALUES (%s, %s);",
+                    (service_name, service_cost)
+                )
+            else:
+                return "Error: Service Name and Cost must be provided."
+
+        elif 'part_name' in request.form:
+            part_name = request.form.get('part_name', '')
+            part_cost = request.form.get('part_cost', '')
+
+            if part_name and part_cost:
+                cursor.execute(
+                    "INSERT INTO part (part_name, cost) VALUES (%s, %s);",
+                    (part_name, part_cost)
+                )
+            else:
+                return "Error: Part Name and Cost must be provided."
+
+
     # Existing GET request handling code follows...
+
 
     selection = request.args.get('selection', '')
     search = request.args.get('search', '')
@@ -330,7 +358,15 @@ def customer_list():
 
     pagination = Pagination(page=page, total=total, per_page=per_page, record_name='customers')
 
-    return render_template("customer_list.html", customers=customers, job_data=job_data, pagination=pagination, selection=selection, search=search, no_result=no_result)
+    cursor.execute("SELECT service_id, service_name, cost FROM service ORDER BY service_name;")
+    services = cursor.fetchall()
+
+    cursor.execute("SELECT part_id, part_name, cost FROM part ORDER BY part_name;")
+    parts = cursor.fetchall()
+
+    return render_template("customer_list.html", customers=customers, job_data=job_data, pagination=pagination,
+                           selection=selection, search=search, no_result=no_result, services=services, parts=parts)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
