@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_paginate import Pagination
 import mysql.connector
 import connect
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -64,7 +65,7 @@ def current_job_list():
     if selection_query:
         search = f'%{search}%'
         cursor.execute(
-            f"SELECT customer.customer_id, customer.first_name, customer.family_name, job.job_date "
+            f"SELECT customer.customer_id, customer.first_name, customer.family_name, job.job_date, job.job_id "
             f"FROM job "
             f"INNER JOIN customer ON job.customer = customer.customer_id "
             f"WHERE {selection_query} LIKE %s "
@@ -74,7 +75,7 @@ def current_job_list():
         )
     else:
         cursor.execute(
-            "SELECT customer.customer_id, customer.first_name, customer.family_name, job.job_date "
+            "SELECT customer.customer_id, customer.first_name, customer.family_name, job.job_date, job.job_id "
             "FROM job "
             "INNER JOIN customer ON job.customer = customer.customer_id "
             "WHERE job.completed=0 "
@@ -189,7 +190,7 @@ def modify_job():
 
     cursor.execute(
         "SELECT customer.customer_id, customer.first_name, customer.family_name, " 
-        "job.job_date, job.completed, job.paid "
+        "job.job_date, job.completed, job.paid, job.job_id "
         "FROM job "
         "INNER JOIN customer ON job.customer = customer.customer_id "
         "WHERE customer.customer_id=%s;",
@@ -287,6 +288,18 @@ def customer_list():
                 return "Error: Part Name and Cost must be provided."
 
 
+        # Check if both 'customerSelect' and 'job_date' keys are in the request form:
+        if 'customerSelect' in request.form and 'job_date' in request.form:
+            customer_id = request.form.get('customerSelect')
+            job_date = request.form.get('job_date')
+
+            cursor.execute(
+                "INSERT INTO job (job_date, customer, total_cost, completed, paid) VALUES (%s, %s, 0.00, 0, 0);",
+                (job_date, customer_id)
+            )
+
+
+
     # Existing GET request handling code follows...
 
 
@@ -347,7 +360,7 @@ def customer_list():
 
     for customer_id in customer_ids:
         cursor.execute(
-            "SELECT job.job_date, job.total_cost "
+            "SELECT job.job_date, job.total_cost, job.completed, job.paid, job_id "
             "FROM job "
             "WHERE customer=%s;", (customer_id,)
         )
@@ -364,9 +377,52 @@ def customer_list():
     cursor.execute("SELECT part_id, part_name, cost FROM part ORDER BY part_name;")
     parts = cursor.fetchall()
 
-    return render_template("customer_list.html", customers=customers, job_data=job_data, pagination=pagination,
-                           selection=selection, search=search, no_result=no_result, services=services, parts=parts)
 
+    today = datetime.today().strftime('%Y-%m-%d')
+
+
+    return render_template("customer_list.html", customers=customers, job_data=job_data, pagination=pagination,
+                           selection=selection, search=search, no_result=no_result, services=services, parts=parts, today=today)
+
+
+@app.route('/unpaid_bills', methods=['GET', 'POST'])
+def unpaid_bills():
+    cursor = getCursor()
+    search = ""
+
+    no_result = False
+
+    if request.method == 'POST':
+        if 'search_submit' in request.form:
+            search = request.form.get('search')
+            selection = request.form.get('selection')
+            if selection == 'Family Name':
+                cursor.execute(
+                    f"SELECT customer.family_name, customer.first_name, job.job_id, job.job_date, job.total_cost, job.completed FROM job INNER JOIN customer ON job.customer = customer.customer_id WHERE job.paid = 0 AND customer.family_name LIKE '%{search}%'")
+            else:
+                cursor.execute(
+                    f"SELECT customer.family_name, customer.first_name, job.job_id, job.job_date, job.total_cost, job.completed FROM job INNER JOIN customer ON job.customer = customer.customer_id WHERE job.paid = 0 AND customer.first_name LIKE '%{search}%'")
+            jobs = cursor.fetchall()
+
+            if not jobs:
+                no_result = True
+
+        elif 'pay_submit' in request.form:
+            job_id = request.form.get('jobSelect')
+            cursor.execute(f"UPDATE job SET paid = 1 WHERE job_id = {job_id}")
+            return redirect(url_for('unpaid_bills'))  # 刷新页面
+    else:
+        cursor.execute(
+            "SELECT customer.family_name, customer.first_name, job.job_id, job.job_date, job.total_cost, job.completed FROM job INNER JOIN customer ON job.customer = customer.customer_id WHERE job.paid = 0")
+    jobs = cursor.fetchall()
+
+    return render_template("unpaid_bills.html", jobs=jobs, no_result=no_result)
+
+
+@app.route('/billing_history', methods=['GET', 'POST'])
+def billing_history():
+
+    return render_template("billing_history.html")
 
 if __name__ == '__main__':
     app.run(debug=True)

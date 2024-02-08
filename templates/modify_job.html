@@ -21,7 +21,7 @@
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                                 <li class="nav-item">
-                                    <a class="nav-link active text-light" aria-current="page" href="/currentjoblist">Technician Home</a>
+                                    <a class="nav-link active text-light" aria-current="page" href="/currentjoblist">Technician Home |</a>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle text-light"
@@ -81,6 +81,7 @@
                                             <option value="{{ service_name[0] }}">{{ service_name[1] }}</option>
                                         {% endfor %}
                                     </select>
+                                    <span class="input-group-text">Quantity</span>
                                     <input type="number" class="form-control" name="qtyService">
                                     <button type="submit" class="btn btn-outline-success" {% if row[4] == 1 %}disabled{% endif %}>Add</button>
                                 </div>
@@ -121,6 +122,7 @@
                                             <option value="{{ part_name[0] }}">{{ part_name[1] }}</option>
                                         {% endfor %}
                                     </select>
+                                    <span class="input-group-text">Quantity</span>
                                     <input type="number" class="form-control" name="qtyPart">
                                     <button type="submit" class="btn btn-outline-success" {% if row[4] == 1 %}disabled{% endif %}>Add</button>
                                 </div>
@@ -171,6 +173,7 @@
                 <table class="table table-success table-hover">
                     <thead>
                         <tr>
+                            <th>Job ID</th>
                             <th>Customer ID</th>
                             <th>Customer Name</th>
                             <th>Job Date</th>
@@ -179,6 +182,7 @@
                     <tbody>
                         {% for row in data %}
                         <tr>
+                            <td>{{row[6]}}</td>
                             <td>{{row[0]}}</td>
                             <td>{{row[1] if row[1] is not none else "" }} {{ row[2] if row[2] is not none else "" }}</td>
                             <td>{{row[3]}}</td>
