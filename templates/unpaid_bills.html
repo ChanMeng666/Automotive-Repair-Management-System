@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}<title>Unpaid Bills</title>{% endblock %}
+{% block title %}
+    <title>Unpaid Bills</title>
+{% endblock %}
 
 {% block content %}
     <div class="container-lg text-center">
@@ -35,24 +37,18 @@
                 </nav>
             </div>
         </div>
-
         <div class="row mb-2">
             <div class="col">
                 <h3 class="text-center" style="background-color: #6AC3A9; color: #FFFFFF;">Unpaid Bills</h3>
             </div>
         </div>
-
         <form method="POST" action="{{url_for('unpaid_bills')}}">
             <div class="row mb-2">
                 <div class="col-md-4">
                     <select class="form-select me-3" id="selection" name="selection">
                         <option selected>Choose...</option>
-                        <option value="Family Name" {% if selection == 'Family Name' %} selected {% endif %}>
-                            Family Name
-                        </option>
-                        <option value="First Name" {% if selection == 'First Name' %} selected {% endif %}>
-                            First Name
-                        </option>
+                        <option value="Family Name" {% if selection=='Family Name' %}selected{% endif %}>Family Name</option>
+                        <option value="First Name" {% if selection=='First Name' %}selected{% endif %}>First Name</option>
                     </select>
                 </div>
                 <div class="col-md-4">
@@ -60,15 +56,14 @@
                 </div>
                 <div class="col-md-4">
                     <button class="btn btn-outline-success" type="submit" name="search_submit" style="width: 100%;">Search</button>
-                </div>
+                 </div>
             </div>
             {% if no_result %}
                 <div class="alert alert-warning" role="alert">
-                No search found, please re-enter.
+                    No search found, please re-enter.
                 </div>
             {% endif %}
         </form>
-
         <div class="row mb-2">
             <div class="col">
                 <form method="POST" action="{{url_for('unpaid_bills')}}">
@@ -86,15 +81,15 @@
                         </thead>
                         <tbody>
                             {% for job in jobs %}
-                            <tr>
-                                <td><input type="radio" name="jobSelect" id="jobSelect" value="{{ job[2] }}"></td>
-                                <td>{{ job[0] }}</td>
-                                <td>{{ job[1] }}</td>
-                                <td>{{ job[2] }}</td>
-                                <td>{{ job[3] }}</td>
-                                <td>{{ job[4] }}</td>
-                                <td>{{ 'YES' if job[5]==1 else 'NO' }}</td>
-                            </tr>
+                                <tr>
+                                    <td><input type="radio" name="jobSelect" id="jobSelect" value="{{ job[2] }}"></td>
+                                    <td>{{ job[0] }}</td>
+                                    <td>{{ job[1] }}</td>
+                                    <td>{{ job[2] }}</td>
+                                    <td>{{ job[3] }}</td>
+                                    <td>{{ job[4] }}</td>
+                                    <td>{{ 'YES' if job[5]==1 else 'NO' }}</td>
+                                </tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -106,14 +101,11 @@
                 </form>
             </div>
         </div>
-
         <div class="row mb-2">
-
             <div class="col">
 
             </div>
         </div>
-
         <div class="row mb-2">
             <div class="col">
                 <div class="card">

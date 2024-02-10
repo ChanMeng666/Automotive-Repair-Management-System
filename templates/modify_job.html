@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}<title>Modify Job</title>{% endblock %}
+{% block title %}
+    <title>Modify Job</title>
+{% endblock %}
 
 {% block content %}
     <div class="container-lg text-center">
@@ -9,13 +11,7 @@
                 <nav class="navbar navbar-expand-lg bg-body-dark">
                     <div class="container-fluid">
                         <a class="navbar-brand text-light" href="/">Selwyn Panel Beaters Online |</a>
-                        <button class="navbar-toggler"
-                                type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#navbarSupportedContent"
-                                aria-controls="navbarSupportedContent"
-                                aria-expanded="false"
-                                aria-label="Toggle navigation">
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -24,17 +20,13 @@
                                     <a class="nav-link active text-light" aria-current="page" href="/currentjoblist">Technician Home |</a>
                                 </li>
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle text-light"
-                                       href="#"
-                                       role="button"
-                                       data-bs-toggle="dropdown"
-                                       aria-expanded="false">
+                                    <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Dropdown
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li><a class="dropdown-item" href="#">Action</a></li>
                                         <li><a class="dropdown-item" href="#">Another action</a></li>
-                                        <li><hr class="dropdown-divider"></li>
+                                        <li><hr class="dropdown-divider" /></li>
                                         <li><a class="dropdown-item" href="#">Something else here</a></li>
                                     </ul>
                                 </li>
@@ -56,18 +48,17 @@
                 <div class="card">
                     <div class="card-header" style="background-color: #FFE55F; color: #FFFFFF;">Completed Services</div>
                     <div class="card-body">
-
                         {% for row in data %}
                             {% for service in services %}
                                 <form class="row mb-2" method="POST">
                                     <div class="input-group input-group-sm">
                                         <span class="input-group-text">{{ service[1] }}</span>
-                                        <input type="text" class="form-control" value="{{ service[2] }}" readonly>
+                                        <input type="text" class="form-control" value="{{ service[2] }}" readonly />
                                         <span class="input-group-text">$</span>
-                                        <span class="input-group-text">×</span>
-                                        <input type="text" class="form-control" value="{{ service[3] }}" readonly>
+                                        <span class="input-group-text">x</span>
+                                        <input type="text" class="form-control" value="{{ service[3] }}" readonly />
 
-                                        <input type="hidden" name="deleteService" value="{{ service[0] }}">
+                                        <input type="hidden" name="deleteService" value="{{ service[0] }}" />
                                         <button type="submit" class="btn btn-outline-danger" {% if row[4] == 1 %}disabled{% endif %}>Delete</button>
                                     </div>
                                 </form>
@@ -82,13 +73,12 @@
                                         {% endfor %}
                                     </select>
                                     <span class="input-group-text">Quantity</span>
-                                    <input type="number" class="form-control" name="qtyService">
+                                    <input type="number" class="form-control" name="qtyService" />
                                     <button type="submit" class="btn btn-outline-success" {% if row[4] == 1 %}disabled{% endif %}>Add</button>
                                 </div>
                             </form>
                         {% endfor %}
                     </div>
-
                 </div>
             </div>
 
@@ -96,23 +86,21 @@
                 <div class="card">
                     <div class="card-header" style="background-color: #65BFDB; color: #FFFFFF;">Used Parts</div>
                     <div class="card-body">
-
                         {% for row in data %}
                             {% for part in parts %}
                                 <form class="row mb-2" method="POST">
                                     <div class="input-group input-group-sm">
                                         <span class="input-group-text">{{ part[1] }}</span>
-                                        <input type="text" class="form-control" value="{{ part[2] }}" readonly>
+                                        <input type="text" class="form-control" value="{{ part[2] }}" readonly />
                                         <span class="input-group-text">$</span>
-                                        <span class="input-group-text">×</span>
-                                        <input type="text" class="form-control" value="{{ part[3] }}" readonly>
+                                        <span class="input-group-text">x</span>
+                                        <input type="text" class="form-control" value="{{ part[3] }}" readonly />
 
-                                        <input type="hidden" name="deletePart" value="{{ part[0] }}">
+                                        <input type="hidden" name="deletePart" value="{{ part[0] }}" />
                                         <button type="submit" class="btn btn-outline-danger" {% if row[4] == 1 %}disabled{% endif %}>Delete</button>
                                     </div>
                                 </form>
                             {% endfor %}
-
 
                             <form class="row mb-2" method="POST" name="addPart">
                                 <div class="input-group input-group-sm">
@@ -123,12 +111,11 @@
                                         {% endfor %}
                                     </select>
                                     <span class="input-group-text">Quantity</span>
-                                    <input type="number" class="form-control" name="qtyPart">
+                                    <input type="number" class="form-control" name="qtyPart" />
                                     <button type="submit" class="btn btn-outline-success" {% if row[4] == 1 %}disabled{% endif %}>Add</button>
                                 </div>
                             </form>
                         {% endfor %}
-
                     </div>
                 </div>
             </div>
@@ -143,25 +130,24 @@
                             <form class="row mb-2" method="POST">
                                 <div class="input-group input-group-sm">
                                     <span class="input-group-text">Completion Status</span>
-                                    <input type="text" class="form-control" name="completionStatus" value="{{ 'YES' if row[4]==1 else 'NO' }}" {% if row[4] == 1 %}readonly{% endif %}>
-                                    <button type="submit" class="btn btn-outline-success" {% if row[4] == 1 %}disabled{% endif %}>Modify</button>
+                                    <input type="text" class="form-control" name="completionStatus" value="{{ 'YES' if row[4]==1 else 'NO' }}" {% if row[4] == 1 %}readonly{% endif %} />
+                                    <button type="submit" class="btn btn-outline-success" {% if row[4] == 1 %}disabled{% endif %}>Modify (to yes)</button>
                                 </div>
                             </form>
 
                             <form class="row mb-2" name="totalCost">
                                 <div class="input-group input-group-sm">
                                     <span class="input-group-text">Total Cost</span>
-                                    <input type="text" class="form-control" value="{{ total_cost }}" readonly>
+                                    <input type="text" class="form-control" value="{{ total_cost }}" readonly />
                                 </div>
                             </form>
 
                             <form class="row mb-2">
                                 <div class="input-group input-group-sm">
                                     <span class="input-group-text">Payment Status</span>
-                                    <input type="text" class="form-control" value="{{ 'YES' if row[5]==1 else 'NO' }}" readonly>
+                                    <input type="text" class="form-control" value="{{ 'YES' if row[5]==1 else 'NO' }}" readonly />
                                 </div>
                             </form>
-
                         {% endfor %}
                     </div>
                 </div>
@@ -181,12 +167,12 @@
                     </thead>
                     <tbody>
                         {% for row in data %}
-                        <tr>
-                            <td>{{row[6]}}</td>
-                            <td>{{row[0]}}</td>
-                            <td>{{row[1] if row[1] is not none else "" }} {{ row[2] if row[2] is not none else "" }}</td>
-                            <td>{{row[3]}}</td>
-                        </tr>
+                            <tr>
+                                <td>{{row[6]}}</td>
+                                <td>{{row[0]}}</td>
+                                <td>{{row[1] if row[1] is not none else "" }} {{ row[2] if row[2] is not none else "" }}</td>
+                                <td>{{row[3]}}</td>
+                            </tr>
                         {% endfor %}
                     </tbody>
                 </table>

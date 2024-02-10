@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}<title>Technician Home</title>{% endblock %}
+{% block title %}
+    <title>Technician Home</title>
+{% endblock %}
 
 {% block content %}
     <div class="container-lg text-center">
@@ -50,20 +52,15 @@
                 <div class="col-md-4">
                     <select class="form-select me-3" id="selection" name="selection">
                         <option selected>Choose...</option>
-                        <option value="Customer ID" {% if selection == 'Customer ID' %} selected {% endif %}>
-                            Customer ID
-                        </option>
-                        <option value="Customer Name" {% if selection == 'Customer Name' %} selected {% endif %}>
-                            Customer Name
-                        </option>
-                        <option value="Job Date" {% if selection == 'Job Date' %} selected {% endif %}>Job Date
-                        </option>
+                        <option value="Customer ID" {% if selection == 'Customer ID' %} selected {% endif %}>Customer ID</option>
+                        <option value="Customer Name" {% if selection == 'Customer Name' %} selected {% endif %}>Customer Name</option>
+                        <option value="Job Date" {% if selection == 'Job Date' %} selected {% endif %}>Job Date</option>
                     </select>
                 </div>
 
                 <div class="col-md-4">
-                    <input type="text" class="form-control me-3" placeholder="Fuzzy search possible" id="search"
-                           name="search" value="{{ search }}">
+                    <input type="text" class="form-control me-3" placeholder="Fuzzy search possible"
+                           id="search" name="search" value="{{ search }}">
                 </div>
 
                 <div class="col-md-4">
@@ -76,31 +73,31 @@
             <div class="col">
                 <form action="/currentjoblist" method="post">
                     {% if no_result %}
-                        <div class="alert alert-warning" role="alert">
-                            No search found, please re-enter.
-                        </div>
+                        <div class="alert alert-warning" role="alert">No search found, please re-enter.</div>
                     {% endif %}
                     <table class="table table-success table-hover">
                         <thead>
-                        <tr>
-                            <th>Select</th>
-                            <th>Job ID</th>
-                            <th>Customer ID</th>
-                            <th>Customer Name</th>
-                            <th>Job Date</th>
-                        </tr>
+                            <tr>
+                                <th>Select</th>
+                                <th>Job ID</th>
+                                <th>Customer ID</th>
+                                <th>Customer Name</th>
+                                <th>Job Date</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        {% for row in data %}
-                            <tr>
-                                <td><input type="radio" name="jobSelect" id="jobSelect" value="{{ row[0] }}"></td>
-                                <td>{{row[4]}}</td>
-                                <td>{{row[0]}}</td>
-                                <td>{{row[1] if row[1] is not none else "" }} {{row[2] if row[2] is not none else "" }}
-                                </td>
-                                <td>{{row[3]}}</td>
-                            </tr>
-                        {% endfor %}
+                            {% for row in data %}
+                                <tr>
+                                    <td><input type="radio" name="jobSelect" id="jobSelect" value="{{ row[0] }}"></td>
+                                    <td>{{row[4]}}</td>
+                                    <td>{{row[0]}}</td>
+                                    <td>
+                                        {{row[1] if row[1] is not none else "" }}
+                                        {{row[2] if row[2] is not none else "" }}
+                                    </td>
+                                    <td>{{row[3]}}</td>
+                                </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
 
@@ -120,16 +117,12 @@
         <div class="row mb-2">
             <div class="col">
                 <div class="card">
-                    <div class="card-body">
-                        This is some text within a card body.
-                    </div>
+                    <div class="card-body">This is some text within a card body.</div>
                 </div>
             </div>
             <div class="col">
                 <div class="card">
-                    <div class="card-body">
-                        This is some text within a card body.
-                    </div>
+                    <div class="card-body">This is some text within a card body.</div>
                 </div>
             </div>
             <div class="col">
