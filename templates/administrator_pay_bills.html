@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>{% block title %}Pay Bills{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+          crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="false">Welcome Home</button>
+            <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false" disabled>Technician Home</button>
+            <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="true">Administrator Home</button>
+        </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+
+        </div>
+        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab" tabindex="0">
+
+
+
+            <nav>
+                <div class="nav nav-tabs" id="administrator-tab" role="tablist">
+                    <button class="nav-link active" id="administrator-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="false">Customer List & Customer Search & Schedule Job</button>
+                    <button class="nav-link" id="administrator-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Add Customer</button>
+                    <button class="nav-link" id="administrator-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Add Service</button>
+                    <button class="nav-link" id="administrator-disabled-tab" data-bs-toggle="tab" data-bs-target="#nav-disabled" type="button" role="tab" aria-controls="nav-disabled" aria-selected="false">Add Part</button>
+                    <button class="nav-link" id="administrator-paybills-tab" data-bs-toggle="tab" data-bs-target="#nav-disabled" type="button" role="tab" aria-controls="nav-disabled" aria-selected="true">Unpaid bills & Pay Bills</button>
+                    <button class="nav-link" id="administrator-overduebills-tab" data-bs-toggle="tab" data-bs-target="#nav-disabled" type="button" role="tab" aria-controls="nav-disabled" aria-selected="false">Billing History & Overdue Bills</button>
+                </div>
+            </nav>
+            <div class="tab-content" id="administrator-tabContent">
+                <div class="tab-pane fade show active" id="administrator-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+
+                </div>
+                <div class="tab-pane fade" id="administrator-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
+
+                </div>
+                <div class="tab-pane fade" id="administrator-contact" role="tabpanel" aria-labelledby="nav-contact-tab" tabindex="0">
+
+                </div>
+                <div class="tab-pane fade" id="administrator-disabled" role="tabpanel" aria-labelledby="nav-disabled-tab" tabindex="0">
+
+                </div>
+                <div class="tab-pane fade" id="administrator-paybills" role="tabpanel" aria-labelledby="nav-disabled-tab" tabindex="0">
+
+                </div>
+                <div class="tab-pane fade" id="administrator-overduebills" role="tabpanel" aria-labelledby="nav-disabled-tab" tabindex="0">
+
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+<!-- Bootstrap's JavaScript bundle including Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous">
+</script>
+<!--    <script>-->
+<!--      // Example starter JavaScript for disabling form submissions if there are invalid fields-->
+<!--      (() => {-->
+<!--        'use strict';-->
+
+<!--        // Fetch all the forms we want to apply custom Bootstrap validation styles to-->
+<!--        const forms = document.querySelectorAll('.needs-validation');-->
+
+<!--        // Loop over them and prevent submission-->
+<!--        Array.from(forms).forEach(form => {-->
+<!--          form.addEventListener('submit', event => {-->
+<!--            if (!form.checkValidity()) {-->
+<!--              event.preventDefault();-->
+<!--              event.stopPropagation();-->
+<!--            }-->
+
+<!--            form.classList.add('was-validated');-->
+<!--          }, false);-->
+<!--        });-->
+<!--      })();-->
+<!--    </script>-->
+</body>
+</html>

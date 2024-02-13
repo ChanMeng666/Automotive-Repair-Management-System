@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>{% block title %}Modify Job{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+          crossorigin="anonymous">
+</head>
+<body>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="container">
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <a class="nav-link" href="{{ url_for('home') }}">Welcome Home</a>
+            <button class="nav-link active" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="true">Technician Home</button>
+            <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false" disabled>Administrator Home</button>
+        </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
+
+            <div class="container">
+                <nav>
+                    <div class="nav nav-tabs" id="technician-tab" role="tablist">
+                        <a class="nav-link" href="{{ url_for('currentjoblist') }}">Current Jobs</a>
+                        <button class="nav-link active" id="technician-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="true">Modify Job</button>
+                    </div>
+                </nav>
+                <div class="tab-content" id="technician-tabContent">
+                    <div class="tab-pane fade show active" id="technician-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
+                        <div class="table-responsive">
+                            <table class="table table-success table-hover">
+                                <thead>
+                                <tr>
+                                    <th>Customer ID</th>
+                                    <th>First Name</th>
+                                    <th>Family Name</th>
+                                    <th>Job ID</th>
+                                    <th>Job Date</th>
+                                    <th>Total Cost</th>
+                                    <th>Completed Status</th>
+                                    <th>Payment Status</th>
+                                </tr>
+                                </thead>
+                                <tbody class="table-group-divider">
+                                <tr>
+                                    <td>{{ data.customer_id }}</td>
+                                    <td>{{ data.first_name }}</td>
+                                    <td>{{ data.family_name }}</td>
+                                    <td>{{ data.job_id }}</td>
+                                    <td>{{ data.job_date }}</td>
+                                    <td>{{ data.total_cost }}</td>
+                                    <td>{{ 'YES' if data.completed else 'NO' }}</td>
+                                    <td>{{ 'YES' if data.paid else 'NO' }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="container">
+
+                            <nav>
+                                <div class="nav nav-tabs" id="technician_modify_job-tab" role="tablist">
+                                    <button class="nav-link active" id="technician_modify_job-home-tab" data-bs-toggle="tab" data-bs-target="#technician_modify_job-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Add Service</button>
+                                    <button class="nav-link" id="technician_modify_job-profile-tab" data-bs-toggle="tab" data-bs-target="#technician_modify_job-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Add Part</button>
+                                    <button class="nav-link" id="technician_modify_job-contact-tab" data-bs-toggle="tab" data-bs-target="#technician_modify_job-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Mark as Completed</button>
+
+                                </div>
+                            </nav>
+                            <div class="tab-content" id="technician_modify_job-tabContent">
+                                <div class="tab-pane fade show active" id="technician_modify_job-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+                                    <select class="form-select" size="5" aria-label="added_services">
+                                        <option selected>Added Services...</option>
+                                        {% for service in services %}
+                                            <option value="{{ service.service_id }}">{{ service.service_name }} (Quantity: {{ service.qty }})</option>
+                                        {% endfor %}
+                                    </select>
+
+                                    <form method="POST" action="{{ url_for('add_service_to_job', job_id=data.job_id) }}">
+                                        <div class="input-group">
+                                            <select class="form-select" name="service_id" aria-label="optional_services" required>
+                                                <option selected>Optional Services...</option>
+                                                {% for service in all_services %}
+                                                    <option value="{{ service.service_id }}">{{ service.service_name }} (Cost: ${{ service.cost }})</option>
+                                                {% endfor %}
+                                            </select>
+                                            <span class="input-group-text">Quantity</span>
+                                            <input  type="number" name="service_qty" aria-label="service_quantity" class="form-control" required>
+                                            <button type="submit" class="btn btn-outline-success" {% if job_completed %} disabled{% endif %}>Add</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div class="tab-pane fade" id="technician_modify_job-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
+                                    <select class="form-select" size="5" aria-label="added_parts">
+                                        <option selected>Added Parts...</option>
+                                        {% for part in parts %}
+                                            <option value="{{ part.part_id }}">{{ part.part_name }} (Quantity: {{ part.qty }})</option>
+                                        {% endfor %}
+                                    </select>
+                                    <form method="POST" action="{{ url_for('add_part_to_job', job_id=data.job_id) }}">
+                                        <div class="input-group">
+                                            <select class="form-select" name="part_id" aria-label="optional_parts" required>
+                                                <option selected>Optional Parts...</option>
+                                                {% for part in all_parts %}
+                                                    <option value="{{ part.part_id }}">{{ part.part_name }} (Cost: ${{ part.cost }})</option>
+                                                {% endfor %}
+                                            </select>
+                                            <span class="input-group-text">Quantity</span>
+                                            <input  type="number" name="part_qty" aria-label="part_quantity" class="form-control" required>
+                                            <button type="submit" class="btn btn-outline-success" {% if job_completed %} disabled{% endif %}>Add</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+
+                                <div class="tab-pane fade" id="technician_modify_job-contact" role="tabpanel" aria-labelledby="nav-contact-tab" tabindex="0">
+                                    <div class="card">
+                                      <h5 class="card-header">Please Note</h5>
+                                      <div class="card-body">
+                                        <h5 class="card-title">Once the job is marked complete, it cannot be modified.</h5>
+                                        <form action="{{ url_for('mark_job_as_completed', job_id=data['job_id']) }}" method="POST">
+                                            <button type="submit" class="btn btn-primary btn-sm">Still marked as completed</button>
+                                        </form>
+                                      </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous">
+</script>
+
+</body>
+</html>
