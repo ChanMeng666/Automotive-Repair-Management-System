@@ -62,12 +62,20 @@
                                 </table>
                                 <button type="submit" class="btn btn-outline-success">Modify</button>
                             </form>
-                                {% if message %}
-                                    <div class="alert alert-warning" role="alert">
-                                      {{ message }}
-                                    </div>
-                                {% endif %}
+                            {% if message %}
+                                <div class="alert alert-warning" role="alert">
+                                  {{ message }}
+                                </div>
+                            {% endif %}
                         </div>
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+                                {% set prev_page = page - 1 if page > 1 else 1 %}
+                                {% set next_page = page + 1 %}
+                                <li class="page-item"><a class="page-link" href="{{ url_for('currentjoblist', page=prev_page) }}">Previous</a></li>
+                                <li class="page-item"><a class="page-link" href="{{ url_for('currentjoblist', page=next_page) }}">Next</a></li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>

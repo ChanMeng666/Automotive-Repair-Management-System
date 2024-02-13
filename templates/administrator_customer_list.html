@@ -10,7 +10,6 @@
 </head>
 <body>
 <div class="container">
-
     <nav>
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
             <a class="nav-link" href="{{ url_for('home') }}">Welcome Home</a>
@@ -19,94 +18,155 @@
         </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
-        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+        <div class="tab-pane fade show active" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab" tabindex="0">
+            <div class="container">
+                <nav>
+                    <div class="nav nav-tabs" id="administrator-tab" role="tablist">
+                        <button class="nav-link active" id="administrator-home-tab" data-bs-toggle="tab" data-bs-target="#administrator-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Customer List & Customer Search & Schedule Job</button>
+                        <button class="nav-link" id="administrator-profile-tab" data-bs-toggle="tab" data-bs-target="#administrator-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Add Customer</button>
+                        <button class="nav-link" id="administrator-contact-tab" data-bs-toggle="tab" data-bs-target="#administrator-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Add Service</button>
+                        <button class="nav-link" id="administrator-disabled-tab" data-bs-toggle="tab" data-bs-target="#administrator-disabled" type="button" role="tab" aria-controls="nav-disabled" aria-selected="false">Add Part</button>
+                        <button class="nav-link" id="administrator-paybills-tab" data-bs-toggle="tab" data-bs-target="#administrator-paybills" type="button" role="tab" aria-controls="nav-disabled" aria-selected="false">Unpaid bills & Pay Bills</button>
+                        <button class="nav-link" id="administrator-overduebills-tab" data-bs-toggle="tab" data-bs-target="#administrator-overduebills" type="button" role="tab" aria-controls="nav-disabled" aria-selected="false">Billing History & Overdue Bills</button>
+                    </div>
+                </nav>
+                <div class="tab-content" id="administrator-tabContent">
+                    <div class="tab-pane fade show active" id="administrator-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+                        <form method="post" action="/administrator_customer_list">
+                            <div class="input-group">
+                                <select class="form-select" name="customer_search" id="customer_search">
+                                    <option selected>Choose...</option>
+                                    <option value="first_name">First Name</option>
+                                    <option value="family_name">Family Name</option>
+                                </select>
+                                <input type="text" class="form-control" name="search_text" placeholder="Support fuzzy search...">
+                                <button class="btn btn-outline-secondary" type="submit">Search</button>
+                            </div>
+                        </form>
+                        <div class="table-responsive">
+                            <form method="post" action="/administrator_customer_list">
+                                <table class="table table-success table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>Select</th>
+                                        <th>Customer ID</th>
+                                        <th>First Name</th>
+                                        <th>Family Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="table-group-divider">
+                                        {% for customer in customers %}
+                                            <tr>
+                                              <td><input type="radio" name="customer_select" id="customer_select" value="{{ customer.customer_id }}"></td>
+                                              <td>{{ customer.customer_id }}</td>
+                                              <td>{{ customer.first_name }}</td>
+                                              <td>{{ customer.family_name }}</td>
+                                              <td>{{ customer.email }}</td>
+                                              <td>{{ customer.phone }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                <input type="date" id="job_date" name="job_date" min="{{ today }}" required>
+                                <button type="submit" class="btn btn-outline-success">Schedule Job</button>
+                            </form>
+                        </div>
+                    </div>
 
-        </div>
-        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab" tabindex="0">
 
+                    <div class="tab-pane fade" id="administrator-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
+                        <form action="/add_customer" method="post" class="input-group input-group-sm mb-2">
+                            <span class="input-group-text">First Name</span>
+                            <input type="text" class="form-control" name="first_name">
+                            <span class="input-group-text">Family Name</span>
+                            <input type="text" class="form-control" name="family_name" REQUIRED>
+                            <span class="input-group-text">Email</span>
+                            <input type="text" class="form-control" name="email" REQUIRED>
+                            <span class="input-group-text">Phone</span>
+                            <input type="text" class="form-control" name="phone" REQUIRED>
+                            <button type="submit" class="btn btn-outline-success">Add</button>
+                        </form>
+                    </div>
 
+                    <div class="tab-pane fade" id="administrator-contact" role="tabpanel" aria-labelledby="nav-contact-tab" tabindex="0">
+                        <form method="post" action="/add_service">
+                            <div class="input-group input-group-sm mb-2">
+                                <span class="input-group-text">Service Name</span>
+                                <input type="text" class="form-control" name="service_name" required>
+                                <span class="input-group-text">Service Cost</span>
+                                <input type="number" class="form-control" name="service_cost" step="0.01" required>
+                                <span class="input-group-text">$</span>
+                                <button type="submit" class="btn btn-outline-success">Add</button>
+                            </div>
+                        </form>
+                        <div class="table-responsive">
+                            <table class="table table-success table-hover">
+                                <thead>
+                                <tr>
+                                    <th>Service ID</th>
+                                    <th>Service Name</th>
+                                    <th>Service Cost</th>
+                                </tr>
+                                </thead>
+                                <tbody class="table-group-divider">
+                                {% for service in services %}
+                                <tr>
+                                    <td>{{ service.service_id }}</td>
+                                    <td>{{ service.service_name }}</td>
+                                    <td>{{ service.cost }}</td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
 
-            <nav>
-                <div class="nav nav-tabs" id="administrator-tab" role="tablist">
-                    <button class="nav-link active" id="administrator-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Customer List & Customer Search & Schedule Job</button>
-                    <button class="nav-link" id="administrator-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Add Customer</button>
-                    <button class="nav-link" id="administrator-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Add Service</button>
-                    <button class="nav-link" id="administrator-disabled-tab" data-bs-toggle="tab" data-bs-target="#nav-disabled" type="button" role="tab" aria-controls="nav-disabled" aria-selected="false">Add Part</button>
-                    <button class="nav-link" id="administrator-paybills-tab" data-bs-toggle="tab" data-bs-target="#nav-disabled" type="button" role="tab" aria-controls="nav-disabled" aria-selected="false">Unpaid bills & Pay Bills</button>
-                    <button class="nav-link" id="administrator-overduebills-tab" data-bs-toggle="tab" data-bs-target="#nav-disabled" type="button" role="tab" aria-controls="nav-disabled" aria-selected="false">Billing History & Overdue Bills</button>
-                </div>
-            </nav>
-            <div class="tab-content" id="administrator-tabContent">
-                <div class="tab-pane fade show active" id="administrator-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+                    <div class="tab-pane fade" id="administrator-disabled" role="tabpanel" aria-labelledby="nav-disabled-tab" tabindex="0">
+                        <form action="{{url_for('add_part')}}" method="post">
+                            <div class="input-group input-group-sm mb-2">
+                                <span class="input-group-text">Part Name</span>
+                                <input type="text" class="form-control" name="part_name" required>
+                                <span class="input-group-text">Part Cost</span>
+                                <input type="number" class="form-control" name="part_cost" step="0.01" required>
+                                <span class="input-group-text">$</span>
+                                <button type="submit" class="btn btn-outline-success">Add</button>
+                            </div>
+                        </form>
 
-                </div>
-                <div class="tab-pane fade" id="administrator-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
-
-                </div>
-                <div class="tab-pane fade" id="administrator-contact" role="tabpanel" aria-labelledby="nav-contact-tab" tabindex="0">
-
-                </div>
-                <div class="tab-pane fade" id="administrator-disabled" role="tabpanel" aria-labelledby="nav-disabled-tab" tabindex="0">
-
-                </div>
-                <div class="tab-pane fade" id="administrator-paybills" role="tabpanel" aria-labelledby="nav-disabled-tab" tabindex="0">
-
-                </div>
-                <div class="tab-pane fade" id="administrator-overduebills" role="tabpanel" aria-labelledby="nav-disabled-tab" tabindex="0">
-
+                        <div class="table-responsive">
+                            <table class="table table-success table-hover">
+                                <thead>
+                                <tr>
+                                    <th>Part ID</th>
+                                    <th>Part Name</th>
+                                    <th>Part Cost</th>
+                                </tr>
+                                </thead>
+                                <tbody class="table-group-divider">
+                                {% for part in parts %}
+                                    <tr>
+                                        <td>{{ part.part_id }}</td>
+                                        <td>{{ part.part_name }}</td>
+                                        <td>{{ part.cost }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         </div>
     </div>
-
 </div>
-
-
-
-
 
 <!-- Bootstrap's JavaScript bundle including Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous">
 </script>
-<!--    <script>-->
-<!--      // Example starter JavaScript for disabling form submissions if there are invalid fields-->
-<!--      (() => {-->
-<!--        'use strict';-->
 
-<!--        // Fetch all the forms we want to apply custom Bootstrap validation styles to-->
-<!--        const forms = document.querySelectorAll('.needs-validation');-->
-
-<!--        // Loop over them and prevent submission-->
-<!--        Array.from(forms).forEach(form => {-->
-<!--          form.addEventListener('submit', event => {-->
-<!--            if (!form.checkValidity()) {-->
-<!--              event.preventDefault();-->
-<!--              event.stopPropagation();-->
-<!--            }-->
-
-<!--            form.classList.add('was-validated');-->
-<!--          }, false);-->
-<!--        });-->
-<!--      })();-->
-<!--    </script>-->
 </body>
 </html>
