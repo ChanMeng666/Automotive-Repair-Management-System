@@ -1,13 +1,9 @@
-from flask import Flask, flash
-from flask import render_template
-from flask import request
-from flask import redirect
-from flask import url_for
-import re
 from datetime import datetime
+from flask import Flask, flash, render_template, request, redirect, url_for
 import mysql.connector
-from mysql.connector import FieldType
 import connect
+import re
+
 
 app = Flask(__name__)
 app.secret_key = '123456'
@@ -53,16 +49,16 @@ def currentjoblist():
 
     if request.method == 'POST':
         jobid = request.form.get('job_select')
-        # Check if job_select is empty
+
         if not jobid:
-            # If empty, return current page
             return render_template('currentjoblist.html', data=data, message="Please select a job before modify.")
+
         return redirect(url_for('modifyjob', job_id=jobid))
 
     return render_template('currentjoblist.html', data=data, page=page)
 
 
-@app.route("/job/<int:job_id>", methods= ['GET', 'POST'])
+@app.route("/job/<int:job_id>", methods=['GET', 'POST'])
 def modifyjob(job_id):
     cursor = getCursor()
 
@@ -77,7 +73,6 @@ def modifyjob(job_id):
         "SELECT s.service_name, js.qty "
         "FROM service AS s JOIN job_service AS js ON s.service_id = js.service_id "
         "WHERE js.job_id= %s ORDER BY s.service_name", (job_id,)
-
     )
     services_data = cursor.fetchall()
 
@@ -104,25 +99,26 @@ def add_service_to_job(job_id):
     service_id = request.form.get('service_id')
     qty = request.form.get('service_qty')
 
-
     cursor = getCursor()
     cursor.execute(
         "INSERT INTO job_service (job_id, service_id, qty) VALUES (%s, %s, %s)",
         (job_id, service_id, qty)
     )
+
     return redirect(url_for('modifyjob', job_id=job_id))
+
 
 @app.route("/add_part_to_job/<int:job_id>", methods=['POST'])
 def add_part_to_job(job_id):
     part_id = request.form.get('part_id')
     qty = request.form.get('part_qty')
 
-
     cursor = getCursor()
     cursor.execute(
         "INSERT INTO job_part (job_id, part_id, qty) VALUES (%s, %s, %s)",
         (job_id, part_id, qty)
     )
+
     return redirect(url_for('modifyjob', job_id=job_id))
 
 
@@ -130,9 +126,9 @@ def add_part_to_job(job_id):
 def mark_job_as_completed(job_id):
     cursor = getCursor()
     cursor.execute("UPDATE job SET completed=1 WHERE job_id = %s", (job_id,))
+
     flash('Job marked as completed!', 'info')
     return redirect(url_for('modifyjob', job_id=job_id))
-
 
 
 @app.route("/administrator_customer_list", methods=['POST', 'GET'])
@@ -171,8 +167,7 @@ def administrator_customer_list():
     cursor.execute("SELECT * FROM part ORDER BY part_name")
     parts = cursor.fetchall()
 
-    return render_template('administrator_customer_list.html', customers=customers,
-                           services=services, parts=parts)
+    return render_template('administrator_customer_list.html', customers=customers, services=services, parts=parts)
 
 
 @app.route("/add_customer", methods=['POST'])
@@ -189,6 +184,7 @@ def add_customer():
 
     return redirect(url_for('administrator_customer_list'))
 
+
 @app.route("/add_service", methods=['POST'])
 def add_service():
     cursor = getCursor()
@@ -199,6 +195,7 @@ def add_service():
         (service_name, service_cost))
 
     return redirect(url_for('administrator_customer_list'))
+
 
 @app.route("/add_part", methods=['POST'])
 def add_part():
@@ -212,7 +209,6 @@ def add_part():
 
     return redirect(url_for('administrator_customer_list'))
 
-
 @app.route("/administrator_pay_bills", methods=['GET', 'POST'])
 def administrator_pay_bills():
     cursor = getCursor()
@@ -222,36 +218,50 @@ def administrator_pay_bills():
 
         if selected_customer != 'Choose...':
             cursor.execute("""
-                SELECT job.job_id, job.job_date, job.total_cost, job.completed, job.paid, customer.customer_id, customer.first_name, customer.family_name
+                SELECT job.job_id, job.job_date, job.total_cost, job.completed, job.paid, 
+                       customer.customer_id, customer.first_name, customer.family_name
                 FROM job
                 JOIN customer ON job.customer = customer.customer_id
-                WHERE job.paid = 0 AND CONCAT(customer.first_name, ' ', customer.family_name) = %s
+                WHERE job.paid = 0 
+                      AND CONCAT(customer.first_name, ' ', customer.family_name) = %s
+                ORDER BY customer.family_name, customer.first_name
             """, (selected_customer,))
+
         else:
             cursor.execute("""
-                SELECT job.job_id, job.job_date, job.total_cost, job.completed, job.paid, customer.customer_id, customer.first_name, customer.family_name
+                SELECT job.job_id, job.job_date, job.total_cost, job.completed, job.paid, 
+                       customer.customer_id, customer.first_name, customer.family_name
                 FROM job
                 JOIN customer ON job.customer = customer.customer_id
                 WHERE job.paid = 0
+                ORDER BY customer.family_name, customer.first_name
             """)
+
         customer_info = cursor.fetchall()
 
     else:
-        # When it's a GET request, select all customers' information as the initial data
         cursor.execute("""
-            SELECT job.job_id, job.job_date, job.total_cost, job.completed, job.paid, customer.customer_id, customer.first_name, customer.family_name
+            SELECT job.job_id, job.job_date, job.total_cost, job.completed, job.paid, 
+                   customer.customer_id, customer.first_name, customer.family_name
             FROM job
             JOIN customer ON job.customer = customer.customer_id
             WHERE job.paid = 0
+            ORDER BY customer.family_name, customer.first_name
         """)
 
         customer_info = cursor.fetchall()
 
-    cursor.execute("SELECT CONCAT(IFNULL(first_name,''), ' ', family_name) AS full_name FROM customer")
+    cursor.execute("""
+        SELECT CONCAT(IFNULL(first_name,''), ' ', family_name) AS full_name 
+        FROM customer 
+        ORDER BY family_name, first_name
+    """)
+
     all_customers = cursor.fetchall()
 
-    return render_template('administrator_pay_bills.html', customer_info=customer_info, customers=all_customers)
-
+    return render_template('administrator_pay_bills.html',
+                           customer_info=customer_info,
+                           customers=all_customers)
 
 @app.route("/administrator_mark_paid", methods=['POST'])
 def administrator_mark_paid():
@@ -263,9 +273,46 @@ def administrator_mark_paid():
     flash("The selected bill is marked as paid.")
     return redirect(url_for("administrator_pay_bills"))
 
-
-@app.route("/administrator_overdue_bills")
+@app.route("/administrator_overdue_bills", methods=['GET', 'POST'])
 def administrator_overdue_bills():
     cursor = getCursor()
+    customer_data = None
+    selected_customer = None
 
-    return render_template('administrator_overdue_bills.html')
+    if request.method == 'POST':
+        customer_id_name = request.form.get('customer_choose_overduebill')
+        if 'Choose...' not in customer_id_name:  # ensure an actual customer was selected
+            customer_id = int(customer_id_name.split(' ')[0])  # assume the customer id is the first part of the option value
+            cursor.execute(f"""
+                SELECT customer_id, first_name, family_name, email, phone
+                FROM customer
+                WHERE customer_id = {customer_id}
+            """)
+            selected_customer = cursor.fetchall()[0]  # the first and only one asked customer
+
+    cursor.execute("""
+        SELECT customer_id, first_name, family_name
+        FROM customer
+        ORDER BY family_name, first_name
+    """)
+    customer_data = cursor.fetchall()
+
+    cursor.execute("""
+        SELECT job.job_id, job.job_date, job.total_cost, job.completed, job.paid, 
+               customer.customer_id, customer.first_name, customer.family_name
+        FROM job
+        JOIN customer ON job.customer = customer.customer_id
+        ORDER BY job.job_date
+    """)
+    job_data = cursor.fetchall()
+
+    now = datetime.now().date()
+    for job in job_data:
+        job['overdue'] = (now - job['job_date']).days > 14 and job['paid'] == 0
+
+    return render_template('administrator_overdue_bills.html', jobs=job_data, customers=customer_data,
+                           selected_customer=selected_customer)
+
+
+if __name__ == '__main__':
+    app.run()

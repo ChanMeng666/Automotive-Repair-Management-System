@@ -1,91 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="utf-8" />
     <title>{% block title %}Technician Home{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
           rel="stylesheet"
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
           crossorigin="anonymous">
-</head>
-<body>
-<div class="container">
-    <nav>
+  </head>
+  <body>
+    <div class="container">
+      <nav>
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <a class="nav-link" href="{{ url_for('home') }}">Welcome Home</a>
-            <a class="nav-link active" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="true">Technician Home</a>
-            <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false" disabled>Administrator Home</button>
+          <a class="nav-link" href="{{ url_for('home') }}">Welcome Home</a>
+          <a class="nav-link active" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="true">Technician Home</a>
+          <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false" disabled>Administrator Home</button>
         </div>
-    </nav>
-    <div class="tab-content" id="nav-tabContent">
+      </nav>
+      <div class="tab-content" id="nav-tabContent">
         <div class="tab-pane fade show active" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
-            <div class="container">
-                <nav>
-                    <div class="nav nav-tabs" id="technician-tab" role="tablist">
-                        <button class="nav-link active" id="technician-home-tab" data-bs-toggle="tab" data-bs-target="#technician-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Current Jobs</button>
-                        <button class="nav-link" id="technician-profile-tab" data-bs-toggle="tab" data-bs-target="#technician-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false" disabled>Modify Job</button>
+          <div class="container">
+            <nav>
+              <div class="nav nav-tabs" id="technician-tab" role="tablist">
+                <button class="nav-link active" id="technician-home-tab" data-bs-toggle="tab" data-bs-target="#technician-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Current Jobs</button>
+                <button class="nav-link" id="technician-profile-tab" data-bs-toggle="tab" data-bs-target="#technician-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false" disabled>Modify Job</button>
+              </div>
+            </nav>
+            <div class="tab-content" id="technician-tabContent">
+              <div class="tab-pane fade show active" id="technician-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+                <div class="table-responsive">
+                  <form method="POST" action="{{url_for('currentjoblist')}}">
+                    <table class="table table-success table-hover">
+                      <thead>
+                        <tr>
+                          <th>Select</th>
+                          <th>Customer ID</th>
+                          <th>First Name</th>
+                          <th>Family Name</th>
+                          <th>Job ID</th>
+                          <th>Job Date</th>
+                          <th>Total Cost</th>
+                          <th>Completed Status</th>
+                          <th>Payment Status</th>
+                        </tr>
+                      </thead>
+                      <tbody class="table-group-divider">
+                        {% for record in data %}
+                          <tr>
+                            <td><input type="radio" name="job_select" id="job_select" value="{{record.job_id}}" required></td>
+                            <td>{{ record.customer_id }}</td>
+                            <td>{{ record.first_name }}</td>
+                            <td>{{ record.family_name }}</td>
+                            <td>{{ record.job_id }}</td>
+                            <td>{{ record.job_date }}</td>
+                            <td>{{ record.total_cost }}</td>
+                            <td>{% if record.completed == 0 %}NO{% endif %}</td>
+                            <td>{% if record.paid == 0 %}NO{% elif record.paid == 1 %}YES{% endif %}</td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                    <button type="submit" class="btn btn-outline-success">Modify</button>
+                  </form>
+                  {% if message %}
+                    <div class="alert alert-warning" role="alert">
+                      {{ message }}
                     </div>
-                </nav>
-                <div class="tab-content" id="technician-tabContent">
-                    <div class="tab-pane fade show active" id="technician-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
-                        <div class="table-responsive">
-                            <form method="POST" action="{{url_for('currentjoblist')}}">
-                                <table class="table table-success table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Select</th>
-                                            <th>Customer ID</th>
-                                            <th>First Name</th>
-                                            <th>Family Name</th>
-                                            <th>Job ID</th>
-                                            <th>Job Date</th>
-                                            <th>Total Cost</th>
-                                            <th>Completed Status</th>
-                                            <th>Payment Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="table-group-divider">
-                                        {% for record in data %}
-                                            <tr>
-                                                <td><input type="radio" name="job_select" id="job_select" value="{{record.job_id}}" required></td>
-                                                <td>{{ record.customer_id }}</td>
-                                                <td>{{ record.first_name }}</td>
-                                                <td>{{ record.family_name }}</td>
-                                                <td>{{ record.job_id }}</td>
-                                                <td>{{ record.job_date }}</td>
-                                                <td>{{ record.total_cost }}</td>
-                                                <td>{% if record.completed == 0 %}NO{% endif %}</td>
-                                                <td>{% if record.paid == 0 %}NO{% elif record.paid == 1 %}YES{% endif %}</td>
-                                            </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                                <button type="submit" class="btn btn-outline-success">Modify</button>
-                            </form>
-                            {% if message %}
-                                <div class="alert alert-warning" role="alert">
-                                  {{ message }}
-                                </div>
-                            {% endif %}
-                        </div>
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination">
-                                {% set prev_page = page - 1 if page > 1 else 1 %}
-                                {% set next_page = page + 1 %}
-                                <li class="page-item"><a class="page-link" href="{{ url_for('currentjoblist', page=prev_page) }}">Previous</a></li>
-                                <li class="page-item"><a class="page-link" href="{{ url_for('currentjoblist', page=next_page) }}">Next</a></li>
-                            </ul>
-                        </nav>
-                    </div>
+                  {% endif %}
                 </div>
+                <nav aria-label="Page navigation example">
+                  <ul class="pagination">
+                    {% set prev_page = page - 1 if page > 1 else 1 %}
+                    {% set next_page = page + 1 %}
+                    <li class="page-item"><a class="page-link" href="{{ url_for('currentjoblist', page=prev_page) }}">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="{{ url_for('currentjoblist', page=next_page) }}">Next</a></li>
+                  </ul>
+                </nav>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
     </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous">
-</script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous">
+    </script>
+  </body>
 </html>

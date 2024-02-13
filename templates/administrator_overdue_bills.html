@@ -33,22 +33,27 @@
                 <div class="tab-content" id="administrator-tabContent">
 
                     <div class="tab-pane fade show active" id="administrator-overduebills" role="tabpanel" aria-labelledby="nav-disabled-tab" tabindex="0">
-                        <div class="input-group">
-                            <select class="form-select" id="customer_choose_overduebill">
-                                <option selected>Choose...</option>
-                                <option></option>
-                            </select>
-                            <button class="btn btn-outline-secondary" type="button">Choose</button>
-                        </div>
-
+                        <form method="POST" action="/administrator_overdue_bills">
+                            <div class="input-group">
+                                <select class="form-select" id="customer_choose_overduebill" name="customer_choose_overduebill">
+                                    <option selected>Choose...</option>
+                                    {% for customer in customers %}
+                                        <option value="{{ customer.customer_id }} {{ customer.first_name }} {{ customer.family_name }}" {% if customer.customer_id == selected_customer.customer_id %}selected{% endif %}>
+                                            {{ customer.first_name }} {{ customer.family_name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <button class="btn btn-outline-secondary" type="submit">Choose</button>
+                            </div>
+                        </form>
                         <div class="card">
                             <div class="card-header">Customer Details</div>
                             <ul class="list-group list-group-flush">
-                                <li class="list-group-item">Customer ID:</li>
-                                <li class="list-group-item">First Name:</li>
-                                <li class="list-group-item">Family Name</li>
-                                <li class="list-group-item">Email:</li>
-                                <li class="list-group-item">Phone:</li>
+                                <li class="list-group-item">Customer ID: {{ selected_customer.customer_id }}</li>
+                                <li class="list-group-item">First Name: {{ selected_customer.first_name }}</li>
+                                <li class="list-group-item">Family Name: {{ selected_customer.family_name }}</li>
+                                <li class="list-group-item">Email: {{ selected_customer.email }}</li>
+                                <li class="list-group-item">Phone: {{ selected_customer.phone }}</li>
                             </ul>
                         </div>
 
@@ -67,16 +72,20 @@
                                 </tr>
                                 </thead>
                                 <tbody class="table-group-divider">
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
+                                {% for job in jobs %}
+                                    {% if job.customer_id == selected_customer.customer_id %}
+                                         <tr class="{% if job.overdue %}table-danger{% elif job.paid == 1 %}table-secondary{% endif %}">
+                                            <td> {{ job.customer_id }}</td>
+                                            <td> {{ job.first_name }}</td>
+                                            <td> {{ job.family_name }}</td>
+                                            <td> {{ job.job_id }}</td>
+                                            <td> {{ job.job_date }}</td>
+                                            <td> {{ job.total_cost }}</td>
+                                            <td> {{ 'YES' if job.completed else 'NO' }}</td>
+                                            <td> {{ 'YES' if job.paid else 'NO' }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
                                 </tbody>
                             </table>
                         </div>
