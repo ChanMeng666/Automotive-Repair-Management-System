@@ -104,9 +104,6 @@ def add_service_to_job(job_id):
     service_id = request.form.get('service_id')
     qty = request.form.get('service_qty')
 
-    if not service_id or not qty:
-        flash('Please select a service and enter the quantity', 'error')
-        return redirect(url_for('modifyjob', job_id=job_id))
 
     cursor = getCursor()
     cursor.execute(
@@ -120,9 +117,6 @@ def add_part_to_job(job_id):
     part_id = request.form.get('part_id')
     qty = request.form.get('part_qty')
 
-    if not part_id or not qty:
-        flash('Please select a part and enter the quantity', 'error')
-        return redirect(url_for('modifyjob', job_id=job_id))
 
     cursor = getCursor()
     cursor.execute(
@@ -152,7 +146,7 @@ def administrator_customer_list():
         if customer_id and job_date:
             cursor.execute(
                 "INSERT INTO job (job_date, customer, completed, paid, total_cost) VALUES (%s, %s, %s, %s, %s)",
-                (job_date, customer_id, 0, 0, 0.0))
+                (job_date, customer_id, 0, 0, 0.00))
             cursor.execute("SELECT * FROM customer ORDER BY family_name, first_name")
         elif 'customer_search' in request.form and 'search_text' in request.form:
             search_option = request.form.get('customer_search')
@@ -166,28 +160,8 @@ def administrator_customer_list():
                 cursor.execute("SELECT * FROM customer ORDER BY family_name, first_name")
         else:
             cursor.execute("SELECT * FROM customer ORDER BY family_name, first_name")
-
-        selected_customer = request.form.get('selected_customer')
-
-        if selected_customer != "Choose...":
-            cursor.execute(
-                "SELECT * FROM customer WHERE CONCAT(first_name, ' ', family_name) = %s ORDER BY family_name, first_name",
-                (selected_customer,))
-        else:
-            cursor.execute("SELECT * FROM customer ORDER BY family_name, first_name")
-
     else:
         cursor.execute("SELECT * FROM customer ORDER BY family_name, first_name")
-
-
-    cursor.execute("""SELECT c.customer_id, c.first_name,
-                      c.family_name, j.job_id, j.job_date, j.total_cost,
-                      CASE WHEN j.completed = 0 THEN 'NO' ELSE 'YES' END as completed,
-                      CASE WHEN j.paid = 0 THEN 'NO' END as paid 
-                      FROM job j JOIN customer c ON j.customer = c.customer_id 
-                      WHERE j.paid = 0
-                      ORDER BY j.job_date""")
-
 
     customers = cursor.fetchall()
 
@@ -239,16 +213,59 @@ def add_part():
     return redirect(url_for('administrator_customer_list'))
 
 
-@app.route("/administrator_customer_list/mark_as_paid", methods=['POST'])
-def mark_as_paid():
+@app.route("/administrator_pay_bills", methods=['GET', 'POST'])
+def administrator_pay_bills():
     cursor = getCursor()
-    # get the customer_id from the form
-    customer_id = request.form.get('bill_select')
 
-    if customer_id:
-        customer_id = int(customer_id)
-        cursor.execute(
-            "UPDATE job SET paid = 1 WHERE customer = %s",
-            (customer_id,))
-        return 'Success'
-    return 'Failure'
+    if request.method == 'POST':
+        selected_customer = request.form["selected_customer"]
+
+        if selected_customer != 'Choose...':
+            cursor.execute("""
+                SELECT job.job_id, job.job_date, job.total_cost, job.completed, job.paid, customer.customer_id, customer.first_name, customer.family_name
+                FROM job
+                JOIN customer ON job.customer = customer.customer_id
+                WHERE job.paid = 0 AND CONCAT(customer.first_name, ' ', customer.family_name) = %s
+            """, (selected_customer,))
+        else:
+            cursor.execute("""
+                SELECT job.job_id, job.job_date, job.total_cost, job.completed, job.paid, customer.customer_id, customer.first_name, customer.family_name
+                FROM job
+                JOIN customer ON job.customer = customer.customer_id
+                WHERE job.paid = 0
+            """)
+        customer_info = cursor.fetchall()
+
+    else:
+        # When it's a GET request, select all customers' information as the initial data
+        cursor.execute("""
+            SELECT job.job_id, job.job_date, job.total_cost, job.completed, job.paid, customer.customer_id, customer.first_name, customer.family_name
+            FROM job
+            JOIN customer ON job.customer = customer.customer_id
+            WHERE job.paid = 0
+        """)
+
+        customer_info = cursor.fetchall()
+
+    cursor.execute("SELECT CONCAT(IFNULL(first_name,''), ' ', family_name) AS full_name FROM customer")
+    all_customers = cursor.fetchall()
+
+    return render_template('administrator_pay_bills.html', customer_info=customer_info, customers=all_customers)
+
+
+@app.route("/administrator_mark_paid", methods=['POST'])
+def administrator_mark_paid():
+    cursor = getCursor()
+    customer_id = request.form["bill_select"]
+
+    cursor.execute("UPDATE job SET paid = 1 WHERE customer = %s", (customer_id,))
+
+    flash("The selected bill is marked as paid.")
+    return redirect(url_for("administrator_pay_bills"))
+
+
+@app.route("/administrator_overdue_bills")
+def administrator_overdue_bills():
+    cursor = getCursor()
+
+    return render_template('administrator_overdue_bills.html')

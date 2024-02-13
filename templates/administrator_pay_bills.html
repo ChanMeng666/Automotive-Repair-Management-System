@@ -22,62 +22,64 @@
             <div class="container">
                 <nav>
                     <div class="nav nav-tabs" id="administrator-tab" role="tablist">
-                        <button class="nav-link" id="administrator-home-tab" data-bs-toggle="tab" data-bs-target="#administrator-home" type="button" role="tab" aria-controls="nav-home" aria-selected="false">Customer List & Customer Search & Schedule Job</button>
-                        <button class="nav-link" id="administrator-profile-tab" data-bs-toggle="tab" data-bs-target="#administrator-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Add Customer</button>
-                        <button class="nav-link" id="administrator-contact-tab" data-bs-toggle="tab" data-bs-target="#administrator-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Add Service</button>
-                        <button class="nav-link" id="administrator-disabled-tab" data-bs-toggle="tab" data-bs-target="#administrator-disabled" type="button" role="tab" aria-controls="nav-disabled" aria-selected="false">Add Part</button>
-                        <button class="nav-link" id="administrator-paybills-tab" data-bs-toggle="tab" data-bs-target="#administrator-paybills" type="button" role="tab" aria-controls="nav-disabled" aria-selected="true">Unpaid bills & Pay Bills</button>
-                        <button class="nav-link active" id="administrator-overduebills-tab" data-bs-toggle="tab" data-bs-target="#administrator-overduebills" type="button" role="tab" aria-controls="nav-disabled" aria-selected="false">Billing History & Overdue Bills</button>
+                        <a class="nav-link" href="{{ url_for('administrator_customer_list') }}">Customer List & Customer Search & Schedule Job</a>
+                        <a class="nav-link" href="{{ url_for('administrator_customer_list') }}">Add Customer</a>
+                        <a class="nav-link" href="{{ url_for('administrator_customer_list') }}">Add Service</a>
+                        <a class="nav-link" href="{{ url_for('administrator_customer_list') }}">Add Part</a>
+                        <button class="nav-link active" id="administrator-paybills-tab" data-bs-toggle="tab" data-bs-target="#administrator-paybills" type="button" role="tab" aria-controls="nav-disabled" aria-selected="true">Unpaid bills & Pay Bills</button>
+                        <a class="nav-link" href="{{ url_for('administrator_overdue_bills') }}">Billing History & Overdue Bills</a>
                     </div>
                 </nav>
                 <div class="tab-content" id="administrator-tabContent">
 
                     <div class="tab-pane fade show active" id="administrator-paybills" role="tabpanel" aria-labelledby="nav-disabled-tab" tabindex="0">
-                        <form action="/administrator_customer_list" method="POST">
+                        <form method="post">
                             <div class="input-group">
                                 <select class="form-select" id="customer_choose_paybill" name="selected_customer">
                                     <option selected>Choose...</option>
                                     {% for customer in customers %}
-                                        <option> {{ customer.first_name }} {{ customer.family_name }}</option>
+                                        <option> {{ customer.full_name if customer.full_name.strip() else "none" }}</option>
                                     {% endfor %}
                                 </select>
                                 <button class="btn btn-outline-secondary" type="submit">Choose</button>
                             </div>
                         </form>
 
-                        <div class="table-responsive">
-                            <table class="table table-success table-hover">
-                                <thead>
-                                <tr>
-                                    <th>Select</th>
-                                    <th>Customer ID</th>
-                                    <th>First Name</th>
-                                    <th>Family Name</th>
-                                    <th>Job ID</th>
-                                    <th>Job Date</th>
-                                    <th>Total Cost</th>
-                                    <th>Completed Status</th>
-                                    <th>Payment Status</th>
-                                </tr>
-                                </thead>
-                                <tbody class="table-group-divider">
-                                {% for customer in customers %}
-                                <tr>
-                                    <td><input type="radio" name="bill_select" id="paybill_select" value="{{ customer.customer_id }}"></td>
-                                    <td> {{ customer.customer_id }}</td>
-                                    <td> {{ customer.first_name }}</td>
-                                    <td> {{ customer.family_name }}</td>
-                                    <td> {{ customer.job_id }}</td>
-                                    <td> {{ customer.job_date }}</td>
-                                    <td> {{ customer.total_cost }}</td>
-                                    <td> {{ customer.completed }}</td>
-                                    <td> {{ customer.paid }}</td>
-                                </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                            <button type="submit" class="btn btn-outline-success">Marked as paid</button>
-                        </div>
+                        <form method="post" action="/administrator_mark_paid">
+                            <div class="table-responsive">
+                                <table class="table table-success table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>Select</th>
+                                        <th>Customer ID</th>
+                                        <th>First Name</th>
+                                        <th>Family Name</th>
+                                        <th>Job ID</th>
+                                        <th>Job Date</th>
+                                        <th>Total Cost</th>
+                                        <th>Completed Status</th>
+                                        <th>Payment Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="table-group-divider">
+                                    {% for customer in customer_info %}
+                                    <tr>
+                                        <td><input type="radio" name="bill_select" id="paybill_select" value="{{ customer.customer_id }}"></td>
+                                        <td> {{ customer.customer_id }}</td>
+                                        <td> {{ customer.first_name }}</td>
+                                        <td> {{ customer.family_name }}</td>
+                                        <td> {{ customer.job_id }}</td>
+                                        <td> {{ customer.job_date }}</td>
+                                        <td> {{ customer.total_cost }}</td>
+                                        <td> {{ "YES" if customer.completed else "NO" }}</td>
+                                        <td> {{ "YES" if customer.paid else "NO" }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                                <button type="submit" class="btn btn-outline-success">Marked as paid</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

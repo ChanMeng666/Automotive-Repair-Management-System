@@ -22,11 +22,11 @@
             <div class="container">
                 <nav>
                     <div class="nav nav-tabs" id="administrator-tab" role="tablist">
-                        <button class="nav-link" id="administrator-home-tab" data-bs-toggle="tab" data-bs-target="#administrator-home" type="button" role="tab" aria-controls="nav-home" aria-selected="false">Customer List & Customer Search & Schedule Job</button>
-                        <button class="nav-link" id="administrator-profile-tab" data-bs-toggle="tab" data-bs-target="#administrator-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Add Customer</button>
-                        <button class="nav-link" id="administrator-contact-tab" data-bs-toggle="tab" data-bs-target="#administrator-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Add Service</button>
-                        <button class="nav-link" id="administrator-disabled-tab" data-bs-toggle="tab" data-bs-target="#administrator-disabled" type="button" role="tab" aria-controls="nav-disabled" aria-selected="false">Add Part</button>
-                        <button class="nav-link" id="administrator-paybills-tab" data-bs-toggle="tab" data-bs-target="#administrator-paybills" type="button" role="tab" aria-controls="nav-disabled" aria-selected="false">Unpaid bills & Pay Bills</button>
+                        <a class="nav-link" href="{{ url_for('administrator_customer_list') }}">Customer List & Customer Search & Schedule Job</a>
+                        <a class="nav-link" href="{{ url_for('administrator_customer_list') }}">Add Customer</a>
+                        <a class="nav-link" href="{{ url_for('administrator_customer_list') }}">Add Service</a>
+                        <a class="nav-link" href="{{ url_for('administrator_customer_list') }}">Add Part</a>
+                        <a class="nav-link" href="{{ url_for('administrator_pay_bills') }}">Unpaid bills & Pay Bills</a>
                         <button class="nav-link active" id="administrator-overduebills-tab" data-bs-toggle="tab" data-bs-target="#administrator-overduebills" type="button" role="tab" aria-controls="nav-disabled" aria-selected="true">Billing History & Overdue Bills</button>
                     </div>
                 </nav>

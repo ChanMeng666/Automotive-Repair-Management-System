@@ -47,7 +47,7 @@
                                     <tbody class="table-group-divider">
                                         {% for record in data %}
                                             <tr>
-                                                <td><input type="radio" name="job_select" id="job_select" value="{{record.job_id}}"></td>
+                                                <td><input type="radio" name="job_select" id="job_select" value="{{record.job_id}}" required></td>
                                                 <td>{{ record.customer_id }}</td>
                                                 <td>{{ record.first_name }}</td>
                                                 <td>{{ record.family_name }}</td>
