@@ -1,14 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <title>{% block title %}Administrator Home{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-          crossorigin="anonymous">
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}
+Billing History & Overdue Bills
+{% endblock %}
+{% block content %}
 <div class="container">
     <nav>
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -22,7 +16,7 @@
             <div class="container">
                 <nav>
                     <div class="nav nav-tabs" id="administrator-tab" role="tablist">
-                        <a class="nav-link" href="{{ url_for('administrator_customer_list') }}">Customer List & Customer Search & Schedule Job</a>
+                        <a class="nav-link" href="{{ url_for('administrator_customer_list') }}">Customer List & Schedule Job</a>
                         <a class="nav-link" href="{{ url_for('administrator_customer_list') }}">Add Customer</a>
                         <a class="nav-link" href="{{ url_for('administrator_customer_list') }}">Add Service</a>
                         <a class="nav-link" href="{{ url_for('administrator_customer_list') }}">Add Part</a>
@@ -36,27 +30,28 @@
                         <form method="POST" action="/administrator_overdue_bills">
                             <div class="input-group">
                                 <select class="form-select" id="customer_choose_overduebill" name="customer_choose_overduebill">
-                                    <option selected>Choose...</option>
+                                    <option  selected>Choose...</option>
                                     {% for customer in customers %}
                                         <option value="{{ customer.customer_id }} {{ customer.first_name }} {{ customer.family_name }}" {% if customer.customer_id == selected_customer.customer_id %}selected{% endif %}>
                                             {{ customer.first_name }} {{ customer.family_name }}
                                         </option>
                                     {% endfor %}
                                 </select>
-                                <button class="btn btn-outline-secondary" type="submit">Choose</button>
+                                <button class="btn btn-outline-primary" type="submit">Choose</button>
                             </div>
                         </form>
-                        <div class="card">
-                            <div class="card-header">Customer Details</div>
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">Customer ID: {{ selected_customer.customer_id }}</li>
-                                <li class="list-group-item">First Name: {{ selected_customer.first_name }}</li>
-                                <li class="list-group-item">Family Name: {{ selected_customer.family_name }}</li>
-                                <li class="list-group-item">Email: {{ selected_customer.email }}</li>
-                                <li class="list-group-item">Phone: {{ selected_customer.phone }}</li>
-                            </ul>
-                        </div>
-
+                        {% if selected_customer %}
+                            <div class="card">
+                                <div class="card-header">Customer Details</div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">Customer ID: {{ selected_customer.customer_id }}</li>
+                                    <li class="list-group-item">First Name: {{ selected_customer.first_name }}</li>
+                                    <li class="list-group-item">Family Name: {{ selected_customer.family_name }}</li>
+                                    <li class="list-group-item">Email: {{ selected_customer.email }}</li>
+                                    <li class="list-group-item">Phone: {{ selected_customer.phone }}</li>
+                                </ul>
+                            </div>
+                        {% endif %}
                         <div class="table-responsive">
                             <table class="table table-success table-hover">
                                 <thead>
@@ -72,20 +67,34 @@
                                 </tr>
                                 </thead>
                                 <tbody class="table-group-divider">
-                                {% for job in jobs %}
-                                    {% if job.customer_id == selected_customer.customer_id %}
-                                         <tr class="{% if job.overdue %}table-danger{% elif job.paid == 1 %}table-secondary{% endif %}">
-                                            <td> {{ job.customer_id }}</td>
-                                            <td> {{ job.first_name }}</td>
-                                            <td> {{ job.family_name }}</td>
-                                            <td> {{ job.job_id }}</td>
-                                            <td> {{ job.job_date }}</td>
-                                            <td> {{ job.total_cost }}</td>
-                                            <td> {{ 'YES' if job.completed else 'NO' }}</td>
-                                            <td> {{ 'YES' if job.paid else 'NO' }}</td>
-                                        </tr>
-                                    {% endif %}
-                                {% endfor %}
+                                    {% for job in jobs %}
+                                        {% if selected_customer %}
+                                            {% if job.customer_id == selected_customer.customer_id %}
+                                                <tr class="{% if job.overdue %}table-danger{% elif job.paid == 1 %}table-secondary{% endif %}">
+                                                    <td> {{ job.customer_id }}</td>
+                                                    <td> {{ job.first_name }}</td>
+                                                    <td> {{ job.family_name }}</td>
+                                                    <td> {{ job.job_id }}</td>
+                                                    <td> {{ job.job_date }}</td>
+                                                    <td> {{ job.total_cost }}</td>
+                                                    <td> {{ 'YES' if job.completed else 'NO' }}</td>
+                                                    <td> {{ 'YES' if job.paid else 'NO' }}</td>
+                                                </tr>
+                                            {% endif %}
+                                        {% else %}
+                                            <!-- Display jobs for all customers when 'Choose...' option is selected -->
+                                            <tr class="{% if job.overdue %}table-danger{% elif job.paid == 1 %}table-secondary{% endif %}">
+                                                <td> {{ job.customer_id }}</td>
+                                                <td> {{ job.first_name }}</td>
+                                                <td> {{ job.family_name }}</td>
+                                                <td> {{ job.job_id }}</td>
+                                                <td> {{ job.job_date }}</td>
+                                                <td> {{ job.total_cost }}</td>
+                                                <td> {{ 'YES' if job.completed else 'NO' }}</td>
+                                                <td> {{ 'YES' if job.paid else 'NO' }}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
                                 </tbody>
                             </table>
                         </div>
@@ -95,12 +104,4 @@
         </div>
     </div>
 </div>
-
-<!-- Bootstrap's JavaScript bundle including Popper -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous">
-</script>
-
-</body>
-</html>
+{% endblock %}
