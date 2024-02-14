@@ -1,41 +1,91 @@
-# Python Flask Application: Technical Report
+# Web Application Structure
 
-## Web Application Structure
+## Overview
 
-The Python Flask web application follows a Model-View-Controller (MVC) design pattern. The Flask application script serves as the controller, HTML templates provide the view, and the MySQL database serves as the model for the application.
+The web application is designed to manage a panel beating service, with separate interfaces for technicians and administrators. The application is structured using Flask, a micro web framework in Python, and utilizes MySQL for database operations. The application consists of several routes, functions, and templates that work together to provide the desired functionality.
 
-### Routes and Functions
+## Development Process
 
-- `"/"` : The home route renders the base template.
-- `"/currentjobs"` : The current jobs route connects to the database, fetches the job data and renders the current job list template with the fetched data and other parameters for pagination and search functionalities.
-- `"/technician"` : This route redirects to the current jobs route.
+The development process began with the front-end design using WebStorm, which facilitated the creation of a user-friendly interface. The back-end functionality was then implemented using PyCharm, ensuring a seamless integration between the front-end and back-end components.
 
-### Data Flow
+## Templates
 
-The home route renders the base template which gives the user a choice to select their role. The selected role then directs the application on which route to take next.
+Templates are used to define the HTML structure of the application's pages. They are designed according to the Bootstrap documentation (https://getbootstrap.com/docs/5.3/getting-started/introduction/), which provided guidelines for page layout and component usage. WebStorm was used to visually check the design effects in real-time, ensuring consistency and responsiveness across different devices.
 
-In the `"/currentjobs"` route, it calculates the offset for pagination, fetches data from the database, constructs a dictionary mapping containing the job related data, and passes it on to the 'currentjoblist.html' template.
+## Navigation
+
+The application uses Bootstrap's `navs-tabs` component for the navigation bar, which allows for a clear and organized layout. By nesting `<div class="container">` elements, we successfully resolved the issue of having multiple `class="nav-link active"` elements on a single page, which is a common limitation in Bootstrap.
+
+## Overall Layout
+
+The application's overall layout is designed to divert technicians and administrators to their respective pages from the home page. This diversion approach ensures that each user role has a tailored experience, reducing the chance of confusion or accidental actions. All pages inherit the Bootstrap styling and JavaScript from `base.html`, which includes `bootstrap.min.css` and `bootstrap.bundle.min.js`, providing a consistent look and feel across the application.
 
 ## Design Decisions
 
-Decisions regarding the application design and flow were made with usability, scalability, and security in mind.
+### Design Considerations
 
-### Structure and Navigation
+The application was designed with a clear separation of concerns in mind. Technicians and administrators have different roles and permissions, which is reflected in the routes they can access. The use of separate templates for different user roles ensures that the interface is tailored to their specific needs.
 
-The application uses a structure that separates the home page from the "Current Jobs" page. This segregation allows role-based navigation and accessibility. Upon selecting the 'Technician' role, the user is redirected to the current jobs page.
+### Editing Functionality
 
-Implementing a redirect route for technicians leaves room for expanding the application's functionality in the future. For example, setting up separate routes for technicians and administrators.
+Editing functionality is implemented using the same template with conditional statements (IF statements) to enable editing. This approach keeps the code clean and avoids redundancy by not creating separate templates for viewing and editing.
 
-### Templates and Layout
+### Data Transmission
 
-The decision to extend from the base template for all routes was made to ensure the application has a consistent design without redundantly writing the base HTML structure in every template.
+GET requests are used for retrieving data (e.g., listing jobs or customers), while POST requests are used for submitting data (e.g., modifying job details or marking bills as paid). This follows the RESTful design principles, where GET requests are idempotent and POST requests are used for creating or updating resources.
 
-The application uses separate templates for various pages. For data modification functionality, it leverages bootstrap modal pop-up in the current jobs template instead of using a different template or including IF conditions in the same template.
+# Database Questions
 
-### GET vs POST
+### Job Table Creation
 
-For fetching data for display or searching, the application uses GET requests. This decision was based on the fact that the operation would be safe, idempotent, and cacheable - all qualities associated with GET requests as per the HTTP/1.1 specification.
+The SQL statement that creates the `job` table is:
 
-By using Flask's request object, the application accesses data sent through GET requests. As a result, pagination and search functionalities that require parameters to fetch specific data are achieved effectively.
+```sql
+CREATE TABLE IF NOT EXISTS job
+(
+    job_id INT auto_increment PRIMARY KEY NOT NULL,
+    job_date date NOT NULL,
+    customer int NOT NULL,
+    total_cost decimal(6,2) default null,
+    completed tinyint default 0,
+    paid tinyint default 0,
+    FOREIGN KEY (customer) REFERENCES customer(customer_id)
+    ON UPDATE CASCADE
+);
+```
 
-By making clear design decisions and understanding the nature of functionalities required in different parts of the application, a well-structured, extensible, and user-friendly web application was developed.
+### Customer-Job Relationship
+
+The relationship between the `customer` and `job` tables is set up with the following line:
+
+```sql
+FOREIGN KEY (customer) REFERENCES customer(customer_id)
+ON UPDATE CASCADE
+```
+
+### Parts Table Insertion
+
+Details are inserted into the `parts` table with the following lines:
+
+```sql
+INSERT INTO part (`part_name`, `cost`) VALUES ('Windscreen', '560.65');
+INSERT INTO part (`part_name`, `cost`) VALUES ('Headlight', '35.65');
+-- ... other parts
+```
+
+### Audit Trail Fields
+
+To record the time and date a service or part was added to a job, the following fields/columns would be added:
+
+- In the `job_service` table:
+  - `created_at` column of type `DATETIME`
+- In the `job_part` table:
+  - `created_at` column of type `DATETIME`
+
+### Logins and Access Control
+
+Implementing logins is crucial for ensuring that technicians and administrators can only access the routes relevant to their roles. For example, if all facilities were available to everyone:
+
+1. A technician might accidentally mark a job as completed when it's not, leading to incorrect job status and potential customer dissatisfaction.
+2. An unauthorized user could access sensitive customer information or modify job details, causing operational chaos and potential financial loss.
+```
