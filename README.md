@@ -1,4 +1,3 @@
- ```markdown
 # Web Application Structure
 
 ## Overview
