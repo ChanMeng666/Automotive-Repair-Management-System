@@ -409,49 +409,6 @@ def administrator_mark_paid():
     return redirect(url_for("administrator_pay_bills"))
 
 
-# Route and function for administrator_overdue_bills page
-# @app.route("/administrator_overdue_bills", methods=['GET', 'POST'])
-# def administrator_overdue_bills():
-#     cursor = getCursor()
-#     customer_data = None
-#     selected_customer = None
-#
-#     if request.method == 'POST':
-#         customer_id_name = request.form.get('customer_choose_overduebill')
-#         if 'Choose...' not in customer_id_name:  # ensure an actual customer was selected
-#             customer_id = int(
-#                 customer_id_name.split(' ')[0])  # assume the customer id is the first part of the option value
-#             cursor.execute(f"""
-#                 SELECT customer_id, first_name, family_name, email, phone
-#                 FROM customer
-#                 WHERE customer_id = {customer_id}
-#             """)
-#             selected_customer = cursor.fetchall()[0]  # the first and only one asked customer
-#
-#     cursor.execute("""
-#         SELECT customer_id, first_name, family_name
-#         FROM customer
-#         ORDER BY family_name, first_name
-#     """)
-#     customer_data = cursor.fetchall()
-#
-#     cursor.execute("""
-#         SELECT job.job_id, job.job_date, job.total_cost, job.completed, job.paid,
-#                customer.customer_id, customer.first_name, customer.family_name
-#         FROM job
-#         JOIN customer ON job.customer = customer.customer_id
-#         ORDER BY job.job_date
-#     """)
-#     job_data = cursor.fetchall()
-#
-#     now = datetime.now().date()
-#     for job in job_data:
-#         job['overdue'] = (now - job['job_date']).days > 14 and job['paid'] == 0
-#
-#     return render_template('administrator_overdue_bills.html', jobs=job_data, customers=customer_data,
-#                            selected_customer=selected_customer)
-
-
 @app.route("/administrator_overdue_bills", methods=['GET', 'POST'])
 def administrator_overdue_bills():
     cursor = getCursor()
