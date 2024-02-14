@@ -14,7 +14,7 @@ Templates are used to define the HTML structure of the application's pages. They
 
 ## Navigation
 
-The application uses Bootstrap's `navs-tabs` component for the navigation bar, which allows for a clear and organized layout. By nesting `<div class="container">` elements, we successfully resolved the issue of having multiple `class="nav-link active"` elements on a single page, which is a common limitation in Bootstrap.
+The application uses Bootstrap's `navs-tabs` component for the navigation bar, which allows for a clear and organized layout. By nesting `<div class="container">` elements, I successfully resolved the issue of having multiple `class="nav-link active"` elements on a single page, which is a common limitation in Bootstrap.
 
 ## Overall Layout
 
