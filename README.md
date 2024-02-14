@@ -5,28 +5,23 @@
 
 The web application is designed to manage a panel beating service, with separate interfaces for technicians and administrators. The application is structured using Flask, a micro web framework in Python, and utilizes MySQL for database operations. The application consists of several routes, functions, and templates that work together to provide the desired functionality.
 
-## Routes & Functions
+## Development Process
 
-The application has the following main routes:
-
-1. `/` - Home page, which serves as the entry point for both technicians and administrators.
-2. `/currentjoblist` - Lists current jobs for technicians.
-3. `/job/<int:job_id>` - Allows technicians to modify job details.
-4. `/administrator_customer_list` - Lists customers and allows administrators to schedule jobs.
-5. `/administrator_pay_bills` - Lists unpaid bills for administrators to mark as paid.
-6. `/administrator_overdue_bills` - Lists overdue bills for administrators.
-
-Each route corresponds to a specific function in `app.py` that handles the request, interacts with the database, and renders the appropriate template.
+The development process began with the front-end design using WebStorm, which facilitated the creation of a user-friendly interface. The back-end functionality was then implemented using PyCharm, ensuring a seamless integration between the front-end and back-end components.
 
 ## Templates
 
-Templates are used to define the HTML structure of the application's pages. They are located in a separate directory and are rendered by Flask using the `render_template` function. The base template `base.html` is extended by other templates to maintain a consistent layout across pages.
+Templates are used to define the HTML structure of the application's pages. They are designed according to the Bootstrap documentation (https://getbootstrap.com/docs/5.3/getting-started/introduction/), which provided guidelines for page layout and component usage. WebStorm was used to visually check the design effects in real-time, ensuring consistency and responsiveness across different devices.
 
-## Data Flow
+## Navigation
 
-Data flows between routes and functions through the use of form submissions (GET and POST requests). For example, when a technician wants to modify a job, they select a job from the list on `/currentjoblist` and submit the form to `/job/<int:job_id>`. The job details are then fetched from the database and passed to the `technician_modify_job.html` template for editing.
+The application uses Bootstrap's `navs-tabs` component for the navigation bar, which allows for a clear and organized layout. By nesting `<div class="container">` elements, we successfully resolved the issue of having multiple `class="nav-link active"` elements on a single page, which is a common limitation in Bootstrap.
 
-# Design Decisions
+## Overall Layout
+
+The application's overall layout is designed to divert technicians and administrators to their respective pages from the home page. This diversion approach ensures that each user role has a tailored experience, reducing the chance of confusion or accidental actions. All pages inherit the Bootstrap styling and JavaScript from `base.html`, which includes `bootstrap.min.css` and `bootstrap.bundle.min.js`, providing a consistent look and feel across the application.
+
+## Design Decisions
 
 ### Design Considerations
 
@@ -94,3 +89,4 @@ Implementing logins is crucial for ensuring that technicians and administrators 
 
 1. A technician might accidentally mark a job as completed when it's not, leading to incorrect job status and potential customer dissatisfaction.
 2. An unauthorized user could access sensitive customer information or modify job details, causing operational chaos and potential financial loss.
+```
