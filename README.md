@@ -86,6 +86,6 @@ To record the time and date a service or part was added to a job, the following 
 
 Implementing logins is crucial for ensuring that technicians and administrators can only access the routes relevant to their roles. For example, if all facilities were available to everyone:
 
-1. A technician might accidentally mark a job as completed when it's not, leading to incorrect job status and potential customer dissatisfaction.
+1. A technician might accidentally mark a job as paid when it's not, leading to incorrect job status and potential customer dissatisfaction.
 2. An unauthorized user could access sensitive customer information or modify job details, causing operational chaos and potential financial loss.
 ```
