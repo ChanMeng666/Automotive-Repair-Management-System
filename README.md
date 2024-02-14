@@ -2,7 +2,7 @@
 
 ## Overview
 
-The web application is designed to manage a panel beating service, with separate interfaces for technicians and administrators. The application is structured using Flask, a micro web framework in Python, and utilizes MySQL for database operations. The application consists of several routes, functions, and templates that work together to provide the desired functionality.
+The web application is designed to manage Selwyn Panel Beaters Online service, with separate interfaces for technicians and administrators. The application is structured using Flask, a micro web framework in Python, and utilizes MySQL for database operations. The application consists of several routes, functions, and templates that work together to provide the desired functionality.
 
 ## Development Process
 
