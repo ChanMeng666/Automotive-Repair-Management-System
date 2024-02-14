@@ -20,7 +20,7 @@ Billing History & Overdue Bills
                         <a class="nav-link" href="{{ url_for('administrator_customer_list') }}">Add Customer</a>
                         <a class="nav-link" href="{{ url_for('administrator_customer_list') }}">Add Service</a>
                         <a class="nav-link" href="{{ url_for('administrator_customer_list') }}">Add Part</a>
-                        <a class="nav-link" href="{{ url_for('administrator_pay_bills') }}">Unpaid bills & Pay Bills</a>
+                        <a class="nav-link" href="{{ url_for('administrator_pay_bills') }}">Unpaid & Pay Bills</a>
                         <button class="nav-link active" id="administrator-overduebills-tab" data-bs-toggle="tab" data-bs-target="#administrator-overduebills" type="button" role="tab" aria-controls="nav-disabled" aria-selected="true">Billing History & Overdue Bills</button>
                     </div>
                 </nav>
@@ -30,7 +30,7 @@ Billing History & Overdue Bills
                         <form method="POST" action="/administrator_overdue_bills">
                             <div class="input-group">
                                 <select class="form-select" id="customer_choose_overduebill" name="customer_choose_overduebill">
-                                    <option  selected>Choose...</option>
+                                    <option  selected>Show all bills...</option>
                                     {% for customer in customers %}
                                         <option value="{{ customer.customer_id }} {{ customer.first_name }} {{ customer.family_name }}" {% if customer.customer_id == selected_customer.customer_id %}selected{% endif %}>
                                             {{ customer.first_name }} {{ customer.family_name }}

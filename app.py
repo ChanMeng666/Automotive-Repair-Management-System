@@ -473,7 +473,7 @@ def administrator_overdue_bills():
         customer = cursor.fetchone()
         customer_id_name = f'{customer["customer_id"]} {customer["first_name"]} {customer["family_name"]}'
 
-    if 'Choose...' in customer_id_name:  # if 'Choose...' option is selected
+    if 'Show all bills...' in customer_id_name:  # if 'Show all bills...' option is selected
         selected_customer = None
     else:
         customer_id = int(customer_id_name.split(' ')[0])  # assume the customer id is the first part of the option value
