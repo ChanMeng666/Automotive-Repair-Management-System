@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS job
     FOREIGN KEY (customer) REFERENCES customer(customer_id)
     ON UPDATE CASCADE
 );
+```
 
 ### Customer-Job Relationship
 
@@ -68,6 +69,7 @@ The relationship between the customer and job tables is defined as:
 ```sql
 FOREIGN KEY (customer) REFERENCES customer(customer_id)
 ON UPDATE CASCADE
+```
 
 ### Parts Table Insertion
 
@@ -77,6 +79,7 @@ Parts are inserted into the parts table with the following lines:
 INSERT INTO part (`part_name`, `cost`) VALUES ('Windscreen', '560.65');
 INSERT INTO part (`part_name`, `cost`) VALUES ('Headlight', '35.65');
 -- ... other parts
+```
 
 ### Audit Trail Fields
 
