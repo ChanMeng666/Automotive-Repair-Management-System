@@ -1,44 +1,52 @@
-# Web Application Structure
+# Selwyn Panel Beaters Online Service
 
 ## Overview
 
-The web application is designed to manage Selwyn Panel Beaters Online service, with separate interfaces for technicians and administrators. The application is structured using Flask, a micro web framework in Python, and utilizes MySQL for database operations. The application consists of several routes, functions, and templates that work together to provide the desired functionality.
+Selwyn Panel Beaters Online Service is a web application designed to manage the services of Selwyn Panel Beaters, with dedicated interfaces for technicians and administrators. The application is built using Flask, a micro web framework in Python, and MySQL for database operations. It encompasses several routes, functions, and templates to deliver the required functionality.
 
 ## Development Process
 
-The development process began with the front-end design using WebStorm, which facilitated the creation of a user-friendly interface. The back-end functionality was then implemented using PyCharm, ensuring a seamless integration between the front-end and back-end components.
+### Front-End Development
 
-## Templates
+The front-end design was initiated using WebStorm, facilitating the creation of an intuitive and user-friendly interface. The design adheres to the Bootstrap documentation, ensuring a consistent and responsive layout across various devices.
 
-Templates are used to define the HTML structure of the application's pages. They are designed according to the Bootstrap documentation (https://getbootstrap.com/docs/5.3/getting-started/introduction/), which provided guidelines for page layout and component usage. WebStorm was used to visually check the design effects in real-time, ensuring consistency and responsiveness across different devices.
+### Back-End Development
 
-## Navigation
+The back-end functionality was implemented using PyCharm, integrating seamlessly with the front-end components. Flask handles the routing and processing, while MySQL manages the data storage and retrieval.
 
-The application uses Bootstrap's `navs-tabs` component for the navigation bar, which allows for a clear and organized layout. By nesting `<div class="container">` elements, I successfully resolved the issue of having multiple `class="nav-link active"` elements on a single page, which is a common limitation in Bootstrap.
+## Application Structure
 
-## Overall Layout
+### Templates
 
-The application's overall layout is designed to divert technicians and administrators to their respective pages from the home page. This diversion approach ensures that each user role has a tailored experience, reducing the chance of confusion or accidental actions. All pages inherit the Bootstrap styling and JavaScript from `base.html`, which includes `bootstrap.min.css` and `bootstrap.bundle.min.js`, providing a consistent look and feel across the application.
+Templates define the HTML structure of the application's pages. Designed according to Bootstrap guidelines, these templates ensure a consistent look and feel. The design was visually checked in real-time using WebStorm.
 
-## Design Decisions
+### Navigation
 
-### Design Considerations
+The application employs Bootstrap's `navs-tabs` component for the navigation bar, offering a clear and organised layout. The use of nested `<div class="container">` elements resolves the common Bootstrap issue of having multiple `class="nav-link active"` elements on a single page.
 
-The application was designed with a clear separation of concerns in mind. Technicians and administrators have different roles and permissions, which is reflected in the routes they can access. The use of separate templates for different user roles ensures that the interface is tailored to their specific needs.
+### Overall Layout
 
-### Editing Functionality
+The application's layout directs technicians and administrators to their respective pages from the home page, ensuring a tailored experience for each user role. All pages inherit Bootstrap styling and JavaScript from `base.html`, maintaining a consistent interface.
 
-Editing functionality is implemented using the same template with conditional statements (IF statements) to enable editing. This approach keeps the code clean and avoids redundancy by not creating separate templates for viewing and editing.
+### Design Decisions
 
-### Data Transmission
+#### Separation of Concerns
 
-GET requests are used for retrieving data (e.g., listing jobs or customers), while POST requests are used for submitting data (e.g., modifying job details or marking bills as paid). This follows the RESTful design principles, where GET requests are idempotent and POST requests are used for creating or updating resources.
+The application is designed with a clear separation of concerns. Technicians and administrators have distinct roles and permissions, reflected in the routes they can access. Separate templates for different user roles ensure a tailored interface.
 
-# Database Questions
+#### Editing Functionality
+
+Editing functionality is implemented using conditional statements within the same template, keeping the code clean and avoiding redundancy.
+
+#### Data Transmission
+
+GET requests retrieve data (e.g., listing jobs or customers), while POST requests submit data (e.g., modifying job details or marking bills as paid), adhering to RESTful design principles.
+
+## Database Schema
 
 ### Job Table Creation
 
-The SQL statement that creates the `job` table is:
+The `job` table is created using the following SQL statement:
 
 ```sql
 CREATE TABLE IF NOT EXISTS job
@@ -52,40 +60,51 @@ CREATE TABLE IF NOT EXISTS job
     FOREIGN KEY (customer) REFERENCES customer(customer_id)
     ON UPDATE CASCADE
 );
-```
 
 ### Customer-Job Relationship
 
-The relationship between the `customer` and `job` tables is set up with the following line:
+The relationship between the customer and job tables is defined as:
 
 ```sql
 FOREIGN KEY (customer) REFERENCES customer(customer_id)
 ON UPDATE CASCADE
-```
 
 ### Parts Table Insertion
 
-Details are inserted into the `parts` table with the following lines:
+Parts are inserted into the parts table with the following lines:
 
 ```sql
 INSERT INTO part (`part_name`, `cost`) VALUES ('Windscreen', '560.65');
 INSERT INTO part (`part_name`, `cost`) VALUES ('Headlight', '35.65');
 -- ... other parts
-```
 
 ### Audit Trail Fields
 
-To record the time and date a service or part was added to a job, the following fields/columns would be added:
+To record the time and date a service or part was added to a job, the following fields are added:
 
-- In the `job_service` table:
-  - `created_at` column of type `DATETIME`
-- In the `job_part` table:
-  - `created_at` column of type `DATETIME`
+- In the job_service table: created_at column of type DATETIME
+- In the job_part table: created_at column of type DATETIME
 
 ### Logins and Access Control
 
-Implementing logins is crucial for ensuring that technicians and administrators can only access the routes relevant to their roles. For example, if all facilities were available to everyone:
+Implementing logins ensures that technicians and administrators can only access relevant routes. Without this control, unauthorised access could lead to:
 
-1. A technician might accidentally mark a job as paid when it's not, leading to incorrect job status and potential customer dissatisfaction.
-2. An unauthorized user could access sensitive customer information or modify job details, causing operational chaos and potential financial loss.
-```
+1. Technicians accidentally marking jobs as paid, causing incorrect job status.
+2. Unauthorised users accessing sensitive customer information or modifying job details, leading to operational chaos and potential financial loss.
+
+## Getting Started
+To get started with the project, follow these steps:
+
+1. Clone the repository: `git clone https://github.com/ChanMeng666/Automotive-Repair-Management-System.git`
+2. Install the required dependencies: `pip install -r requirements.txt`
+3. Set up the database using the provided SQL scripts.
+4. Run the application: `flask run`
+
+## Contributing
+We welcome contributions! Please fork the repository and submit a pull request with your changes. Ensure that your code adheres to our coding standards and includes appropriate tests.
+
+## License
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+## Contact
+For any questions or suggestions, please contact us at ChanMeng666@outlook.com.
